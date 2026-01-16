@@ -1,0 +1,5 @@
+# Konstanten
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
+SCREEN_TITLE = "Planz Vs Zombies"
+
