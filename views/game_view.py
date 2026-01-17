@@ -2,6 +2,8 @@ import arcade
 import arcade.gui as gui
 from pyglet.math import Vec2
 
+from constants import SCALE_FACTOR
+
 
 #from views.menu_view import MenuView
 
@@ -24,7 +26,7 @@ class GameView(arcade.View):
 
         map_name = ":level:level.tmx"
         
-        self.tilemap = arcade.load_tilemap(map_name, scaling=2.85, offset=Vec2(0,0))
+        self.tilemap = arcade.load_tilemap(map_name, scaling=SCALE_FACTOR, offset=Vec2(0,0))
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
 
         
