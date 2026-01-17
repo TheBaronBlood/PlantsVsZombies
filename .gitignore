@@ -7,3 +7,5 @@
 out
 gen
 test.py
+views/__pycache__
+__pycache__
