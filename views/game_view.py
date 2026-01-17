@@ -1,5 +1,7 @@
 import arcade
 import arcade.gui as gui
+from pyglet.math import Vec2
+
 
 #from views.menu_view import MenuView
 
@@ -22,7 +24,7 @@ class GameView(arcade.View):
 
         map_name = ":level:level.tmx"
         
-        self.tilemap = arcade.load_tilemap(map_name, scaling=2.85, offset=(0,0))
+        self.tilemap = arcade.load_tilemap(map_name, scaling=2.85, offset=Vec2(0,0))
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
 
         
@@ -39,18 +41,10 @@ class GameView(arcade.View):
         self.scene.draw(pixelated=True)
         self.manager.draw()
 
-
     def on_mouse_press(self, x, y, button, modifiers):
-        # Größe eines Tiles in Pixeln (inkl. Scaling)
-        tile_width = self.tilemap.tile_width * self.tilemap.scaling
-        tile_height = self.tilemap.tile_height * self.tilemap.scaling
+        tile = arcade.get_sprites_at_point((x, y), self.scene["Feld"])
+        tile[0].alpha = 90
 
-        # Tile-Koordinaten berechnen
-        tile_x = int(x // tile_width)
-        tile_y = int(y // tile_height)
-
-        print(f"Tile angeklickt: x={tile_x}, y={tile_y}")
-
-        # Optional: Tile aus der 'Feld'-Layer holen
-        feld_layer = self.tilemap.get_tilemap_layer("Feld")
-        print(feld_layer)
+    def on_mouse_release(self, x, y, button, modifiers):
+        tile = arcade.get_sprites_at_point((x, y), self.scene["Feld"])
+        tile[0].alpha = 1000
