@@ -24,6 +24,8 @@ class GameView(arcade.View):
         self._projectile_sprite_list = arcade.SpriteList()
 
         self.plants = self._load_plants()
+        self.selected_plant = None
+
     # Erstellt die Buttons und die UI
     def _setup_ui(self):
         back_button = arcade.gui.UIFlatButton(text="Back", width=250, x=30, y=30)
@@ -36,8 +38,27 @@ class GameView(arcade.View):
             menu_view = MenuView()
             self.window.show_view(menu_view)
 
-        # Use the anchor to position the button on the screen.
         self.manager.add(back_button)
+
+        sonnenblume_button = arcade.gui.UIFlatButton(text="sunflower", width=250, x=SCREEN_WIDTH - 30, y=SCREEN_HEIGHT - 30)
+
+        # Initialise the button with an on_click event.
+        @sonnenblume_button.event("on_click")
+        def on_click_switch_button(event):
+            self.selected_plant = self.plants["sunflower"]
+
+        # Use the anchor to position the button on the screen.
+        self.manager.add(sonnenblume_button)
+
+        peashooter_button = arcade.gui.UIFlatButton(text="peashooter", width=250, x=SCREEN_WIDTH - 280, y=SCREEN_HEIGHT - 30)
+
+        # Initialise the button with an on_click event.
+        @peashooter_button.event("on_click")
+        def on_click_switch_button(event):
+            self.selected_plant = self.plants["peashooter"]
+
+        # Use the anchor to position the button on the screen.
+        self.manager.add(peashooter_button)
 
     # Lädt die Tilemap
     def _load_tilemap(self, map_file: str):
@@ -74,8 +95,6 @@ class GameView(arcade.View):
                 self._projectile_sprite_list
             )
 
-        print(data)
-
         if name:
             return _create_plant(data[name])
 
@@ -101,9 +120,9 @@ class GameView(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         if not arcade.get_sprites_at_point((x,y), self._plant_sprite_list):
-            self.plants["sunflower"].plant_at(x, y)
+            self.selected_plant.plant_at(x, y)
 
         else:
-            self.plants["sunflower"].remove_plant_from(x,y)
+            self.selected_plant.remove_plant_from(x,y)
 
         
