@@ -16,11 +16,12 @@ class Plant(arcade.Sprite):
             recharge: float,
             scale: float,
             texture: str,
-            projectile: str,
+            projectile_texture: str,
             scene: arcade.scene.Scene,
             plants_spritelist: arcade.SpriteList,
             projectiles_spritelist: arcade.SpriteList
     ) -> None:
+
         super().__init__(path_or_texture=texture,
                          scale=scale)
         self.name = name
@@ -29,20 +30,13 @@ class Plant(arcade.Sprite):
         self.damage = damage
         self.recharge = recharge
 
-        self.projectile_texture = projectile
+        self.projectile_texture = projectile_texture
         self.scene = scene
         self.plants_list = plants_spritelist
         self.projectiles_list = projectiles_spritelist
 
         self._planting_sound = arcade.load_sound(":sounds:/einplfanzen.wav")
 
-        self.projektile = Projectile(
-            self.projectile_texture,
-            self.damage,
-            speed=3,
-            self.center_y,
-            self.center_y,
-            speed=3)
 
     def _find_tile_at(self, x: float, y: float)-> arcade.Sprite:
         tiles = arcade.get_sprites_at_point((x,y), self.scene["Plants"])
@@ -78,7 +72,7 @@ class Plant(arcade.Sprite):
                 self.recharge,
                 self.scale,
                 self.texture,
-                self.projectile,
+                self.projectile_texture,
                 self.scene["Plants"],
                 self.plants_list,
                 self.projectiles_list,
