@@ -1,3 +1,5 @@
+from typing import Any
+
 import arcade
 import arcade.gui as gui
 from pyglet.math import Vec2
@@ -48,53 +50,39 @@ class GameView(arcade.View):
             self.tilemap = None
             self.scene = None
 
-    def _load_plants(self, name=None) -> dict[str , Plant] :
+    def _load_plants(self, name=None) -> dict[any, Plant] | Plant:
         with open(str(ROOT_PATH / "assets" / "data" / "plants_data.json")) as f:
             data = json.load(f)
 
+        def _parse_scale(scale_value):
+            return SCALE_FACTOR if scale_value == "SCALE_FACTOR" else float(scale_value)
+
+        def _create_plant( plant_data: dict) -> Plant:
+            scale = _parse_scale(plant_data["scale"])
+
+            return Plant(
+                plant_data["name"],
+                plant_data["sun_cost"],
+                plant_data["hp"],
+                plant_data["damage"],
+                plant_data["recharge"],
+                scale,
+                plant_data["plant_texture"],
+                plant_data["projectil_texture"],
+                self.scene,
+                self._plant_sprite_list,
+                self._projectile_sprite_list
+            )
+
         print(data)
-        if name is None:
-            plant_objects = {}
-            for plant in data:
-                plant_data = data[plant]
 
-                if plant_data["scale"] != "SCALE_FACTOR":
-                    scale = float(plant_data["scale"])
+        if name:
+            return _create_plant(data[name])
 
-                else:
-                    scale = SCALE_FACTOR
-
-                new_plant = Plant(plant_data["name"],
-                                  plant_data["sun_cost"],
-                                  plant_data["hp"],
-                                  plant_data["damage"],
-                                  plant_data["recharge"],
-                                  scale,
-                                  plant_data["plant_texture"],
-                                  plant_data["projectil_texture"],
-                                  self.scene,
-                                  self._plant_sprite_list,
-                                  self._projectile_sprite_list)
-                plant_objects[plant_data["name"]] = new_plant
-            return plant_objects
-        else:
-            plant_data = data[name]
-
-            if plant_data["scale"] != "SCALE_FACTOR":
-                scale = float(plant_data["scale"])
-
-            new_plant = Plant(plant_data["name"],
-                              plant_data["sun_cost"],
-                              plant_data["hp"],
-                              plant_data["damage"],
-                              plant_data["recharge"],
-                              scale,
-                              plant_data["plant_texture"],
-                              plant_data["projectil_texture"],
-                              self.scene,
-                              self._plant_sprite_list,
-                              self._projectile_sprite_list)
-            return new_plant
+        return {
+            plant_data["name"]: _create_plant(plant_data)
+            for plant_data in data.values()
+        }
 
     #
     def on_show_view(self):
@@ -114,6 +102,8 @@ class GameView(arcade.View):
     def on_mouse_press(self, x, y, button, modifiers):
         if not arcade.get_sprites_at_point((x,y), self._plant_sprite_list):
             self.plants["sunflower"].plant_at(x, y)
+
         else:
             self.plants["sunflower"].remove_plant_from(x,y)
 
+        
