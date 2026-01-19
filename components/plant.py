@@ -13,8 +13,9 @@ class Plant(arcade.Sprite):
             hp: float,
             damage: float,
             recharge: float,
-            texture: str,
             scale: float,
+            texture: str,
+            projectile: str,
             scene: arcade.scene.Scene,
             plants_spritelist: arcade.SpriteList,
             projectiles_spritelist: arcade.SpriteList
@@ -27,6 +28,7 @@ class Plant(arcade.Sprite):
         self.damage = damage
         self.recharge = recharge
 
+        self.projectile = projectile
         self.scene = scene
         self.plants_list = plants_spritelist
         self.projectiles_list = projectiles_spritelist
@@ -36,6 +38,8 @@ class Plant(arcade.Sprite):
     def _find_tile_at(self, x: float, y: float)-> arcade.Sprite:
         tiles = arcade.get_sprites_at_point((x,y), self.scene["Plants"])
         return tiles[0] if tiles else None
+
+
 
     def plant_at(self, x: float, y: float) -> str:
         """
@@ -48,24 +52,34 @@ class Plant(arcade.Sprite):
         :return None:
         """
         target_tile = self._find_tile_at(x,y)
-
         if not target_tile:
             return "No Tile"
 
-        existing_plant = arcade.get_sprites_at_point((target_tile.center_x, target_tile.center_y), self.scene["Plants"])
+        existing_plant = arcade.get_sprites_at_point((target_tile.center_x, target_tile.center_y), self.plants_list)
         if existing_plant:
             return "is existing plant"
 
         else:
+            arcade.play_sound(self._planting_sound)
             new_plant = Plant(
-                self.texture,
+                self.name,
+                self.sun_cost,
+                self.hp,
+                self.damage,
+                self.recharge,
                 self.scale,
+                self.texture,
+                self.projectile,
                 self.scene["Plants"],
+                self.plants_list,
                 self.projectiles_list,
             )
 
+
             new_plant.center_x = target_tile.center_x
             new_plant.center_y = target_tile.center_y
+
+
 
             self.plants_list.append(new_plant)
             if self._planting_sound:
@@ -84,7 +98,7 @@ class Plant(arcade.Sprite):
         if not target_tile:
             return "No Tile"
 
-        existing_plant = arcade.get_sprites_at_point((target_tile.center_x, target_tile.center_y), self.scene["Plants"])
+        existing_plant = arcade.get_sprites_at_point((target_tile.center_x, target_tile.center_y), self.plants_list)
         if existing_plant:
             existing_plant[0].remove_from_sprite_lists()
             return "removed existing plant"

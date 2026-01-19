@@ -5,8 +5,9 @@
       "hp": 300,
       "damage": 20,
       "recharge" : 5,
+      "scale" : "SCALE_FACTOR",
       "plant_texture" : ":sprites:PieShoter.png",
-      "projectil" : ":sprites:PieShoter_projectile.png"
+      "projectil_texture" : ":sprites:PieShoter_projectile.png"
   },
   "sunflower" : {
       "name" : "sunflower",
@@ -14,8 +15,9 @@
       "hp": 150,
       "damage": -1,
       "recharge" : -1,
+      "scale" : 0.1,
       "plant_texture" : ":sprites:sunflower.png",
-      "projectil" : ":sprites:sunflower_projectile.png"
+      "projectil_texture" : ":sprites:sunflower_projectile.png"
   }
 
 }

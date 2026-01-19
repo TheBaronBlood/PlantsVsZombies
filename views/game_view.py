@@ -18,6 +18,10 @@ class GameView(arcade.View):
         self._setup_ui()
         self._load_tilemap(":level:level.tmx")
 
+        self._plant_sprite_list = arcade.SpriteList()
+        self._projectile_sprite_list = arcade.SpriteList()
+
+        self.plants = self._load_plants()
     # Erstellt die Buttons und die UI
     def _setup_ui(self):
         back_button = arcade.gui.UIFlatButton(text="Back", width=250, x=30, y=30)
@@ -44,14 +48,49 @@ class GameView(arcade.View):
             self.tilemap = None
             self.scene = None
 
-    def _load_plants(self):
+    def _load_plants(self, name=None) -> dict[str , Plant] :
         with open(str(ROOT_PATH / "assets" / "data" / "plants_data.json")) as f:
             data = json.load(f)
 
-        for plant_data in data:
-            new_plant = Plant(plant_data["name"])
+        print(data)
+        if name is None:
+            plant_objects = {}
+            for plant in data:
+                plant_data = data[plant]
 
+                if plant_data["scale"] != "SCALE_FACTOR":
+                    scale = float(plant_data["scale"])
 
+                else:
+                    scale = SCALE_FACTOR
+
+                new_plant = Plant(plant_data["name"],
+                                  plant_data["sun_cost"],
+                                  plant_data["hp"],
+                                  plant_data["damage"],
+                                  plant_data["recharge"],
+                                  scale,
+                                  plant_data["plant_texture"],
+                                  plant_data["projectil_texture"],
+                                  self.scene,
+                                  self._plant_sprite_list,
+                                  self._projectile_sprite_list)
+                plant_objects[plant_data["name"]] = new_plant
+            return plant_objects
+        else:
+            plant_data = data[name]
+            new_plant = Plant(plant_data["name"],
+                              plant_data["sun_cost"],
+                              plant_data["hp"],
+                              plant_data["damage"],
+                              plant_data["recharge"],
+                              scale,
+                              plant_data["plant_texture"],
+                              plant_data["projectil_texture"],
+                              self.scene,
+                              self._plant_sprite_list,
+                              self._projectile_sprite_list)
+            return new_plant
 
     #
     def on_show_view(self):
@@ -64,10 +103,13 @@ class GameView(arcade.View):
     def on_draw(self):
         self.clear()
         self.scene.draw(pixelated=True)
+        self._plant_sprite_list.draw(pixelated=True)
+        self._projectile_sprite_list.draw(pixelated=True)
         self.manager.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
-        pass
+        if not arcade.get_sprites_at_point((x,y), self._plant_sprite_list):
+            self.plants["sunflower"].plant_at(x, y)
+        else:
+            self.plants["sunflower"].remove_plant_from(x,y)
 
-    def on_mouse_release(self, x, y, button, modifiers):
-        pass
