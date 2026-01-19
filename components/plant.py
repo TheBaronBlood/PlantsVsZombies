@@ -1,5 +1,6 @@
 import arcade
 
+from components.projectile import Projectile
 from constants import *
 
 
@@ -28,12 +29,20 @@ class Plant(arcade.Sprite):
         self.damage = damage
         self.recharge = recharge
 
-        self.projectile = projectile
+        self.projectile_texture = projectile
         self.scene = scene
         self.plants_list = plants_spritelist
         self.projectiles_list = projectiles_spritelist
 
         self._planting_sound = arcade.load_sound(":sounds:/einplfanzen.wav")
+
+        self.projektile = Projectile(
+            self.projectile_texture,
+            self.damage,
+            speed=3,
+            self.center_y,
+            self.center_y,
+            speed=3)
 
     def _find_tile_at(self, x: float, y: float)-> arcade.Sprite:
         tiles = arcade.get_sprites_at_point((x,y), self.scene["Plants"])
@@ -104,6 +113,9 @@ class Plant(arcade.Sprite):
             return "removed existing plant"
         else:
             return "no existing plant"
+
+    def shoot(self):
+        pass
 
     def update(self, delta_time: float):
         pass
