@@ -16,6 +16,7 @@ class MyWindow(arcade.Window):
         arcade.resources.add_resource_handle("tiles", str(ROOT_PATH / "assets" / "tiles"))
         arcade.resources.add_resource_handle("level", str(ROOT_PATH / "assets" / "levels"))
         arcade.resources.add_resource_handle("sounds", str(ROOT_PATH / "assets" / "sounds"))
+        arcade.resources.add_resource_handle("data", str(ROOT_PATH / "assets" / "data"))
 #-----------------------------------------------------------#
 # main funktion with Window
 #-----------------------------------------------------------#

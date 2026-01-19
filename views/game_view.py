@@ -1,8 +1,12 @@
 import arcade
 import arcade.gui as gui
 from pyglet.math import Vec2
+import json
 
-from constants import SCALE_FACTOR
+from components.plant import Plant
+from components.zombie import Zombie
+from components.projectile import Projectile
+from constants import *
 
 
 #from views.menu_view import MenuView
@@ -40,6 +44,15 @@ class GameView(arcade.View):
             self.tilemap = None
             self.scene = None
 
+    def _load_plants(self):
+        with open(str(ROOT_PATH / "assets" / "data" / "plants_data.json")) as f:
+            data = json.load(f)
+
+        for plant_data in data:
+            new_plant = Plant(plant_data["name"])
+
+
+
     #
     def on_show_view(self):
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
@@ -54,9 +67,7 @@ class GameView(arcade.View):
         self.manager.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
-        tile = arcade.get_sprites_at_point((x, y), self.scene["Plants"])
-        tile[0].alpha = 90
+        pass
 
     def on_mouse_release(self, x, y, button, modifiers):
-        tile = arcade.get_sprites_at_point((x, y), self.scene["Plants"])
-        tile[0].alpha = 1000
+        pass
