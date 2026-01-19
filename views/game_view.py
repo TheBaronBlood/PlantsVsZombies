@@ -79,6 +79,10 @@ class GameView(arcade.View):
             return plant_objects
         else:
             plant_data = data[name]
+
+            if plant_data["scale"] != "SCALE_FACTOR":
+                scale = float(plant_data["scale"])
+
             new_plant = Plant(plant_data["name"],
                               plant_data["sun_cost"],
                               plant_data["hp"],
