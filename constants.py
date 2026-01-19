@@ -1,4 +1,6 @@
 from pathlib import Path
+
+
 # Konstanten
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720

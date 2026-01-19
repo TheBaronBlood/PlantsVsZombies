@@ -1,7 +1,4 @@
-from pathlib import Path
-
 import arcade
-import arcade.gui as gui
 
 from constants import *
 
