@@ -20,11 +20,11 @@ class MyWindow(arcade.Window):
 #-----------------------------------------------------------#
 # main funktion with Window
 #-----------------------------------------------------------#
-def main():
+def GameStart():
     window = MyWindow()
     main_view = MenuView()
     window.show_view(main_view)
     arcade.run()
 
 if __name__ == "__main__":
-    main()
+    GameStart()

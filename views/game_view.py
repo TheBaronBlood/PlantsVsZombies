@@ -65,11 +65,14 @@ class GameView(arcade.View):
         try:
             self.tilemap = arcade.load_tilemap(map_file, scaling=SCALE_FACTOR, offset=Vec2(0, 0))
             self.scene = arcade.Scene.from_tilemap(self.tilemap)
+
         except Exception as e:
             # Falls Map nicht gefunden / Fehler beim Laden: Fehler protokollieren
             print(f"Fehler beim Laden der Tilemap '{map_file}': {e}")
             self.tilemap = None
             self.scene = None
+
+
 
     def _load_plants(self, name=None) -> dict[any, Plant] | Plant:
         with open(str(ROOT_PATH / "assets" / "data" / "plants_data.json")) as f:
@@ -107,6 +110,16 @@ class GameView(arcade.View):
     def on_show_view(self):
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
         self.manager.enable()
+
+        if not self.tilemap:
+            return
+
+        map_width = self.tilemap.width * self.tilemap.tile_width
+        map_height = self.tilemap.height * self.tilemap.tile_height
+
+        # globaler Aufruf, kein self.window!
+        arcade.get_window().viewport = 0, map_width, 0, map_height
+
 
     def on_hide_view(self):
         self.manager.disable()

@@ -38,6 +38,7 @@ class Plant(arcade.Sprite):
         self._planting_sound = arcade.load_sound(":sounds:/einplfanzen.wav")
 
 
+
     def _find_tile_at(self, x: float, y: float)-> arcade.Sprite:
         tiles = arcade.get_sprites_at_point((x,y), self.scene["Plants"])
         return tiles[0] if tiles else None
