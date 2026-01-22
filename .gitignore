@@ -4,6 +4,7 @@
 # IntelliJ project files
 .idea
 *.iml
+*.DS_Store
 out
 gen
 test.py
