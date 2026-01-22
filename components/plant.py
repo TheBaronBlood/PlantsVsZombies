@@ -16,7 +16,7 @@ class Plant(arcade.Sprite):
             recharge: float,
             scale: float,
             texture: str,
-            projectile_texture: str,
+            projectile: str,
             scene: arcade.scene.Scene,
             plants_spritelist: arcade.SpriteList,
             projectiles_spritelist: arcade.SpriteList
@@ -30,14 +30,19 @@ class Plant(arcade.Sprite):
         self.damage = damage
         self.recharge = recharge
 
-        self.projectile_texture = projectile_texture
+        self.projectile_texture = projectile
         self.scene = scene
         self.plants_list = plants_spritelist
         self.projectiles_list = projectiles_spritelist
 
         self._planting_sound = arcade.load_sound(":sounds:/einplfanzen.wav")
 
-
+        self.projektile = Projectile(
+            self.projectile_texture, 
+            self.damage, 
+            speed=3, 
+            scale=SCALE_FACTOR
+            )
 
     def _find_tile_at(self, x: float, y: float)-> arcade.Sprite:
         tiles = arcade.get_sprites_at_point((x,y), self.scene["Plants_Grid"])
@@ -56,7 +61,6 @@ class Plant(arcade.Sprite):
         :return None:
         """
         target_tile = self._find_tile_at(x,y)
-        print(target_tile)
         if not target_tile:
             return "No Tile"
 
@@ -109,9 +113,10 @@ class Plant(arcade.Sprite):
             return "removed existing plant"
         else:
             return "no existing plant"
-
+        
     def shoot(self):
-        pass
+        new = self.projektile
+        new.update()
 
     def update(self, delta_time: float):
         pass
