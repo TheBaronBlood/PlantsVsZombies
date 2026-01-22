@@ -18,7 +18,7 @@ class GameView(arcade.View):
         super().__init__()
         self.manager = gui.UIManager()
         self._setup_ui()
-        self._load_tilemap(":level:level.tmx")
+        self._load_tilemap(":level:map.tmx")
 
         self._plant_sprite_list = arcade.SpriteList()
         self._projectile_sprite_list = arcade.SpriteList()
@@ -111,14 +111,6 @@ class GameView(arcade.View):
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
         self.manager.enable()
 
-        if not self.tilemap:
-            return
-
-        map_width = self.tilemap.width * self.tilemap.tile_width
-        map_height = self.tilemap.height * self.tilemap.tile_height
-
-        # globaler Aufruf, kein self.window!
-        arcade.get_window().viewport = 0, map_width, 0, map_height
 
 
     def on_hide_view(self):

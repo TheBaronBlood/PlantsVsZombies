@@ -40,7 +40,7 @@ class Plant(arcade.Sprite):
 
 
     def _find_tile_at(self, x: float, y: float)-> arcade.Sprite:
-        tiles = arcade.get_sprites_at_point((x,y), self.scene["Plants"])
+        tiles = arcade.get_sprites_at_point((x,y), self.scene["Plants_Grid"])
         return tiles[0] if tiles else None
 
 
@@ -56,6 +56,7 @@ class Plant(arcade.Sprite):
         :return None:
         """
         target_tile = self._find_tile_at(x,y)
+        print(target_tile)
         if not target_tile:
             return "No Tile"
 
@@ -74,7 +75,7 @@ class Plant(arcade.Sprite):
                 self.scale,
                 self.texture,
                 self.projectile_texture,
-                self.scene["Plants"],
+                self.scene["Plants_Grid"],
                 self.plants_list,
                 self.projectiles_list,
             )
