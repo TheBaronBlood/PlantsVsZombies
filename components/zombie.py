@@ -16,7 +16,7 @@ from components.gameEngine import GameEngine, UIEngine
 from constants import *
 
 
-
+# TODO Zombie VERTIGSTELLEN
 class ZombieManager:
     pass
 

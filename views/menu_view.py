@@ -19,7 +19,7 @@ from components.projectile import Projectile, ProjectileManager
 from components.gameEngine import GameEngine, UIEngine
 from constants import *
 
-
+# TODO Ein Menü Erstellen
 class MenuView(arcade.View):
     def __init__(self):
         super().__init__()

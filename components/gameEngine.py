@@ -29,6 +29,7 @@ class GameEngine:
         tiles = arcade.get_sprites_at_point((x,y), self.scene[sprite_layer])
         return tiles[0] if tiles else None
 
+    # TODO Ideen ausarbeiten was mit der GameEngine noch alles übernommen werdne kann
 
 class UIEngine:
     pass

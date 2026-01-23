@@ -16,7 +16,7 @@ from components.gameEngine import GameEngine, UIEngine
 from constants import *
 
 
-
+# TODO Projectile VERTIGSTELLEN
 class ProjectileManager:
     pass
 

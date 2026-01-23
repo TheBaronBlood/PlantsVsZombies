@@ -26,11 +26,11 @@ class PlantManager:
         super().__init__()
 
 
-    def create_plant(self):
-        pass
+    def _create_plant(self):
+        pass #TODO Plant zu Sprite List hinzufügen
 
     def spawn_plant(self) -> None:
-        pass
+        pass # TODO Plant an einem Punkt auf der Tilemap spawnen lassen
 
     def on_update(self, delta_time: float) -> None:
         pass
@@ -79,13 +79,13 @@ class Plant(arcade.Sprite):
 
 
 class Sun(Plant):
-    pass
+    pass # TODO - IDLE klasse definieren
 
 class Sunflower(Plant):
-    pass
+    pass # TODO - IDLEKlasse festlegen
 
 class PeaShooter(Plant):
-    pass
+    pass # TODO - Attack Klasse Festlegen
 
 class Walnut(Plant):
-    pass
+    pass # TODO - Attack Klasse Festlegen

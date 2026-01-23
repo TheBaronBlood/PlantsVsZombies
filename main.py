@@ -8,7 +8,7 @@ import arcade
 
 from constants import *
 
-from views.menu_view import Ga
+from views.menu_view import MenuView
 
 class MyWindow(arcade.Window):
     def __init__(self):
