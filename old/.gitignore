@@ -4,6 +4,11 @@
 # IntelliJ project files
 .idea
 *.iml
+*.DS_Store
 out
 gen
-/old/*
+test.py
+test2.py
+views/__pycache__
+__pycache__
+/planung/*

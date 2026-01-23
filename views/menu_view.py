@@ -1,73 +1,43 @@
-import arcade
-import arcade.gui as gui
+"""Zeigt das Start-Menü"""
+__author__ = "Miro K."
+__copyright__ = "Electronic Arts (EA) and PopCap Games"
+__license__ = "Attribution-ShareAlike 4.0 International"
 
-from views.game_view import GameView
+# IMPORTS
+# Arcade Packages
+import arcade
+import arcade.gui
+
+# Math
+from pyglet.math import Vec2
+
+# Game Imports
+from components.plant import Plant, PlantManager
+from components.zombie import Zombie, ZombieManager
+from components.projectile import Projectile, ProjectileManager
+
+from components.gameEngine import GameEngine, UIEngine
+from constants import *
+
 
 class MenuView(arcade.View):
     def __init__(self):
         super().__init__()
-        self.manager = gui.UIManager()
-        self._setup_ui()
 
-    def _setup_ui(self):
-        # Use the anchor to position the button on the screen.
-        self.anchor = self.manager.add(arcade.gui.UIAnchorLayout())
+    def _setup(self):
+        pass
 
-        play_button = arcade.gui.UIFlatButton(text="Play", width=250, y=0)
-        # Initialise the button with an on_click event.
-        @play_button.event("on_click")
-        def _on_click(event):
-            # Passing the main view into menu view as an argument.
-            game_view = GameView()
-            self.window.show_view(game_view)
+    def on_show(self):
+        pass
 
-        self.anchor.add(
-            anchor_x="center_x",
-            anchor_y="center_y",
-            child=play_button,
-            align_y=100
-        )
-
-        load_button = arcade.gui.UIFlatButton(text="Load", width=250)
-        # Initialise the button with an on_click event.
-        @load_button.event("on_click")
-        def _on_click(event):
-            # Passing the main view into menu view as an argument.
-            game_view = GameView()
-            self.window.show_view(game_view)
-
-        self.anchor.add(
-            anchor_x="center_x",
-            anchor_y="center_y",
-            child=load_button,
-            align_y=0
-        )
-
-        exit_button = arcade.gui.UIFlatButton(text="exit", width=250)
-
-        # Initialise the button with an on_click event.
-        @exit_button.event("on_click")
-        def _on_click(event):
-            # Passing the main view into menu view as an argument.
-            game_view = GameView()
-            self.window.close()
-
-        self.anchor.add(
-            anchor_x="center_x",
-            anchor_y="center_y",
-            child=exit_button,
-            align_y=-100
-        )
-
-    def on_show_view(self):
-        arcade.set_background_color([rgb - 50 for rgb in arcade.color.DARK_BLUE_GRAY])
-        self.manager.enable()
-
-    def on_hide_view(self):
-        self.manager.disable()
+    def on_hide(self):
+        pass
 
     def on_draw(self):
-        self.clear()
+        pass
 
-        self.manager.draw()
-        
+    def on_update(self, delta_time):
+        pass
+
+
+

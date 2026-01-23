@@ -12,14 +12,18 @@ import arcade.gui
 from pyglet.math import Vec2
 
 # Game Imports
-from components.gameEngine import GameEngine, UIEngine
+from components.plant import Plant, PlantManager
+from components.zombie import Zombie, ZombieManager
+from components.projectile import Projectile, ProjectileManager
+
 from constants import *
 
 
 
-class ZombieManager:
+
+class GameEngine:
     pass
 
 
-class Zombie(arcade.Sprite):
+class UIEngine:
     pass

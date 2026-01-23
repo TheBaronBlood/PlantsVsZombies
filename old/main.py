@@ -1,22 +1,20 @@
-#!/usr/bin/env python
-"""View, dass das Game an sich rendert und Handled"""
-__author__      = "Miro K."
-__copyright__   = "Electronic Arts (EA) and PopCap Games"
-__license__ = "Attribution-ShareAlike 4.0 International"
-
 import arcade
 
 from constants import *
 
-from views.menu_view import Ga
+from views.menu_view import MenuView
+
 
 class MyWindow(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
 
+        # Findet den Ordner, in dem diese .py Datei liegt
+
         # Verbindet den Ordnerpfad sicher mit den Unterordnern
         arcade.resources.add_resource_handle("sprites", str(ROOT_PATH / "assets" / "sprites"))
-        arcade.resources.add_resource_handle("map", str(ROOT_PATH / "assets" / "maps"))
+        arcade.resources.add_resource_handle("tiles", str(ROOT_PATH / "assets" / "tiles"))
+        arcade.resources.add_resource_handle("level", str(ROOT_PATH / "assets" / "levels"))
         arcade.resources.add_resource_handle("sounds", str(ROOT_PATH / "assets" / "sounds"))
         arcade.resources.add_resource_handle("data", str(ROOT_PATH / "assets" / "data"))
 #-----------------------------------------------------------#

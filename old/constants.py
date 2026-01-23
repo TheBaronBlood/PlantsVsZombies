@@ -11,7 +11,3 @@ SCALE_FACTOR = 2.85
 # paths
 ROOT_PATH = Path(__file__).parent
 
-
-# STATES
-IDLE = "idle"
-ATTACK = "attack"

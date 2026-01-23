@@ -1,6 +1,6 @@
-"""View, Zeigt das Spiel und handled den Spiel Verlauf"""
-__author__      = "Miro K."
-__copyright__   = "Electronic Arts (EA) and PopCap Games"
+"""View, das den Ende des Spiel Handled"""
+__author__ = "Miro K."
+__copyright__ = "Electronic Arts (EA) and PopCap Games"
 __license__ = "Attribution-ShareAlike 4.0 International"
 
 # IMPORTS
@@ -20,7 +20,7 @@ from components.gameEngine import GameEngine, UIEngine
 from constants import *
 
 
-class GameView(arcade.View):
+class GameOverView(arcade.View):
     def __init__(self):
         super().__init__()
 
@@ -38,6 +38,3 @@ class GameView(arcade.View):
 
     def on_update(self, delta_time):
         pass
-
-
-

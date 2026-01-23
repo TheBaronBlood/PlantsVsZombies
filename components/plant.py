@@ -1,122 +1,91 @@
+""""""
+__author__ = "Miro K."
+__copyright__ = "Electronic Arts (EA) and PopCap Games"
+__license__ = "Attribution-ShareAlike 4.0 International"
+
+# IMPORTS
+# Arcade Packages
 import arcade
+import arcade.gui
 
-from components.projectile import Projectile
-from constants import *
+# Math
+from pyglet.math import Vec2
+
+# Game Imports
+from components.gameEngine import GameEngine, UIEngine
+import constants as c
 
 
 
+class PlantManager:
+    def __init__(
+        self,
+        plant_sprite_list: arcade.SpriteList,
+        scene: arcade.scene.Scene,
+    ) -> None:
+        super().__init__()
+
+
+    def create_plant(self):
+        pass
+
+    def spawn_plant(self) -> None:
+        pass
+
+    def on_update(self, delta_time: float) -> None:
+        pass
 
 class Plant(arcade.Sprite):
     def __init__(
-            self,
-            name: str,
-            sun_cost: str,
-            hp: float,
-            damage: float,
-            recharge: float,
-            scale: float,
-            texture: str,
-            projectile: str,
-            scene: arcade.scene.Scene,
-            plants_spritelist: arcade.SpriteList,
-            projectiles_spritelist: arcade.SpriteList
+        self,
+        name,
+        health,
+        sprite_texture,
+        bullet_texture,
     ) -> None:
+        super().__init__()
 
-        super().__init__(path_or_texture=texture,
-                         scale=scale)
         self.name = name
-        self.sun_cost = sun_cost
-        self.hp = hp
-        self.damage = damage
-        self.recharge = recharge
+        self.health = health
+        self.state = c.IDLE
 
-        self.projectile_texture = projectile
-        self.scene = scene
-        self.plants_list = plants_spritelist
-        self.projectiles_list = projectiles_spritelist
-
-        self._planting_sound = arcade.load_sound(":sounds:/einplfanzen.wav")
-
-        self.projektile = Projectile(
-            self.projectile_texture, 
-            self.damage, 
-            speed=3, 
-            scale=SCALE_FACTOR
-            )
-
-    def _find_tile_at(self, x: float, y: float)-> arcade.Sprite:
-        tiles = arcade.get_sprites_at_point((x,y), self.scene["Plants_Grid"])
-        return tiles[0] if tiles else None
+        self.sprite_texture = sprite_texture
+        self.bullet_texture = bullet_texture
 
 
-
-    def plant_at(self, x: float, y: float) -> str:
-        """
-        Versucht, eine Pflanze auf dem Tile bei `(x,y)` zu setzen. \n
-        - Wenn kein Plant-Tile unter `(x,y)` ist -> "no_tile"
-        - Wenn bereits eine Pflanze vorhanden ist -> entfernt sie und return "removed"
-        - Sonst: neue Instanz erzeugen, in plants_list einfügen -> "planted"
-        :param x:
-        :param y:
-        :return None:
-        """
-        target_tile = self._find_tile_at(x,y)
-        if not target_tile:
-            return "No Tile"
-
-        existing_plant = arcade.get_sprites_at_point((target_tile.center_x, target_tile.center_y), self.plants_list)
-        if existing_plant:
-            return "is existing plant"
-
-        else:
-            arcade.play_sound(self._planting_sound)
-            new_plant = Plant(
-                self.name,
-                self.sun_cost,
-                self.hp,
-                self.damage,
-                self.recharge,
-                self.scale,
-                self.texture,
-                self.projectile_texture,
-                self.scene["Plants_Grid"],
-                self.plants_list,
-                self.projectiles_list,
-            )
-
-
-            new_plant.center_x = target_tile.center_x
-            new_plant.center_y = target_tile.center_y
-
-
-
-            self.plants_list.append(new_plant)
-            if self._planting_sound:
-                arcade.play_sound(self._planting_sound)
-            return "planted"
-
-    def remove_plant_from(self, x: float, y: float) -> str:
-        """
-        Versucht, eine Plfanze auf dem Tile bei `(x,y)` zu Enterfen. \n
-        :param x:
-        :param y:
-        :return:
-        """
-        target_tile = self._find_tile_at(x, y)
-
-        if not target_tile:
-            return "No Tile"
-
-        existing_plant = arcade.get_sprites_at_point((target_tile.center_x, target_tile.center_y), self.plants_list)
-        if existing_plant:
-            existing_plant[0].remove_from_sprite_lists()
-            return "removed existing plant"
-        else:
-            return "no existing plant"
-        
-    def shoot(self):
-        new = self.projektile
-        new.update()
-
-    def update(self, delta_time: float):
+    def take_damage(self, damage: int) -> None:
         pass
+
+    def get_pos(self):
+        pass
+
+    def idling(self):
+        pass
+    def attacking(self):
+        pass
+    def setIdle(self):
+        self.state = c.IDLE
+    def setAttack(self):
+        self.state = c.ATTACK
+
+    def handleState(self):
+        if self.state == c.IDLE:
+            self.idling()
+        elif self.state == c.ATTACK:
+            self.attacking()
+
+
+
+
+
+class Sun(Plant):
+    pass
+
+class Sunflower(Plant):
+    pass
+
+class PeaShooter(Plant):
+    pass
+
+class Walnut(Plant):
+    pass
