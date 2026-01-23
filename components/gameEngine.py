@@ -22,7 +22,12 @@ from constants import *
 
 
 class GameEngine:
-    pass
+    def __init__(self):
+        pass
+
+    def _find_tile_at(self, x: float, y: float, sprite_layer: str)-> arcade.Sprite:
+        tiles = arcade.get_sprites_at_point((x,y), self.scene[sprite_layer])
+        return tiles[0] if tiles else None
 
 
 class UIEngine:
