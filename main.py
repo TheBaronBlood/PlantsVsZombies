@@ -7,6 +7,7 @@ __license__ = "Attribution-ShareAlike 4.0 International"
 import arcade
 
 from constants import *
+from views.game_view import GameView
 
 from views.menu_view import MenuView
 
@@ -16,7 +17,7 @@ class MyWindow(arcade.Window):
 
         # Verbindet den Ordnerpfad sicher mit den Unterordnern
         arcade.resources.add_resource_handle("sprites", str(ROOT_PATH / "assets" / "sprites"))
-        arcade.resources.add_resource_handle("map", str(ROOT_PATH / "assets" / "maps"))
+        arcade.resources.add_resource_handle("maps", str(ROOT_PATH / "assets" / "maps"))
         arcade.resources.add_resource_handle("sounds", str(ROOT_PATH / "assets" / "sounds"))
         arcade.resources.add_resource_handle("data", str(ROOT_PATH / "assets" / "data"))
 #-----------------------------------------------------------#
@@ -24,7 +25,7 @@ class MyWindow(arcade.Window):
 #-----------------------------------------------------------#
 def GameStart():
     window = MyWindow()
-    main_view = MenuView()
+    main_view = GameView()
     window.show_view(main_view)
     arcade.run()
 

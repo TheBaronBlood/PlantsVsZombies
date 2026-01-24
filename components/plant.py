@@ -12,28 +12,8 @@ import arcade.gui
 from pyglet.math import Vec2
 
 # Game Imports
-from components.gameEngine import GameEngine, UIEngine
 import constants as c
 
-
-
-class PlantManager:
-    def __init__(
-        self,
-        plant_sprite_list: arcade.SpriteList,
-        scene: arcade.scene.Scene,
-    ) -> None:
-        super().__init__()
-
-
-    def _create_plant(self):
-        pass #TODO Plant zu Sprite List hinzufügen
-
-    def spawn_plant(self) -> None:
-        pass # TODO Plant an einem Punkt auf der Tilemap spawnen lassen
-
-    def on_update(self, delta_time: float) -> None:
-        pass
 
 class Plant(arcade.Sprite):
     def __init__(
@@ -43,7 +23,7 @@ class Plant(arcade.Sprite):
         sprite_texture,
         bullet_texture,
     ) -> None:
-        super().__init__()
+        super().__init__(path_or_texture=sprite_texture, scale=c.SCALE_FACTOR)
 
         self.name = name
         self.health = health
@@ -85,7 +65,45 @@ class Sunflower(Plant):
     pass # TODO - IDLEKlasse festlegen
 
 class PeaShooter(Plant):
-    pass # TODO - Attack Klasse Festlegen
+    def __init__(self):
+        Plant.__init__(self,
+                       "peashooter",
+                       100,
+                       ":sprites:peashooter/peashooter.png",
+                       ":sprites:bullets/peashooter_bullet.png") # TODO erstellen das man einfach durch Namenkonventioinen die richtige sprites geladen werden
 
 class Walnut(Plant):
     pass # TODO - Attack Klasse Festlegen
+
+
+class PlantManager:
+    def __init__(
+        self,
+        plant_sprite_list: arcade.SpriteList,
+        scene: arcade.scene.Scene,
+
+    ) -> None:
+        super().__init__()
+
+        self.plant_sprite_list = plant_sprite_list
+        self.scene = scene
+
+        self.selected_plant= None
+
+
+    def _create_plant(self, plant):
+        return self.plant_sprite_list.append(plant)
+
+    def spawn_plant(self, name: str, tile: arcade.Sprite) -> PeaShooter | None:
+        if "peashooter" == name:
+            new_plant = PeaShooter()
+            new_plant .center_x = tile.center_x
+            new_plant .center_y = tile.center_y
+
+            self._create_plant(new_plant)
+
+
+
+
+    def on_update(self, delta_time: float) -> None:
+        pass

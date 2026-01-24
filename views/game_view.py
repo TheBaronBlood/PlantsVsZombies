@@ -11,10 +11,6 @@ import arcade.gui
 # Math
 from pyglet.math import Vec2
 
-# Game Imports
-from components.plant import Plant, PlantManager
-from components.zombie import Zombie, ZombieManager
-from components.projectile import Projectile, ProjectileManager
 
 from components.gameEngine import GameEngine, UIEngine
 from constants import *
@@ -23,21 +19,28 @@ from constants import *
 class GameView(arcade.View):
     def __init__(self):
         super().__init__()
+        self.UImanager = arcade.gui.UIManager()
+
+        self.game_engine = GameEngine()
+        self.game_engine.load_tilemap(":maps:map_1.tmx")
+
+
 
     def _setup(self):
         pass
 
     def on_show(self):
-        pass
+        self.UImanager.enable()
 
     def on_hide(self):
-        pass
+        self.UImanager.disable()
 
     def on_draw(self):
-        pass
+        self.clear()
+        self.game_engine.scene.draw(pixelated=True)
+        self.game_engine.sprite_list_draw(pixelated=True)
 
-    def on_update(self, delta_time):
-        pass
-
-
-
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            target = self.game_engine._find_tile_at(x, y, "Plants_Grid")
+            self.game_engine.plant_manager.spawn_plant("peashooter", target)

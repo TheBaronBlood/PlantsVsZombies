@@ -12,13 +12,21 @@ import arcade.gui
 from pyglet.math import Vec2
 
 # Game Imports
-from components.gameEngine import GameEngine, UIEngine
 from constants import *
 
 
 # TODO Zombie VERTIGSTELLEN
 class ZombieManager:
-    pass
+    def __init__(
+            self,
+            zombie_sprite_list: arcade.SpriteList,
+            scene: arcade.scene.Scene,
+    ) -> None:
+        super().__init__()
+
+        self.zombie_sprite_list = zombie_sprite_list
+        self.scene = scene
+
 
 
 class Zombie(arcade.Sprite):

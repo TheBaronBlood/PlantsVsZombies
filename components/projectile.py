@@ -12,13 +12,22 @@ import arcade.gui
 from pyglet.math import Vec2
 
 # Game Imports
-from components.gameEngine import GameEngine, UIEngine
 from constants import *
 
 
 # TODO Projectile VERTIGSTELLEN
 class ProjectileManager:
-    pass
+    def __init__(
+            self,
+            projectile_sprite_list: arcade.SpriteList,
+            scene: arcade.scene.Scene,
+    ) -> None:
+        super().__init__()
+
+        self.projectile_sprite_list = projectile_sprite_list
+        self.scene = scene
+
+
 
 
 class Projectile(arcade.Sprite):
