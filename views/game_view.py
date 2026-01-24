@@ -13,7 +13,7 @@ from pyglet.math import Vec2
 
 
 from components.gameEngine import GameEngine, UIEngine
-from constants import *
+import constants as c
 
 # TODO GameView zum Laufen Kriegen
 class GameView(arcade.View):
@@ -23,6 +23,9 @@ class GameView(arcade.View):
 
         self.game_engine = GameEngine()
         self.game_engine.load_tilemap(":maps:map_1.tmx")
+
+
+
 
 
 
@@ -40,7 +43,14 @@ class GameView(arcade.View):
         self.game_engine.scene.draw(pixelated=True)
         self.game_engine.sprite_list_draw(pixelated=True)
 
+    def on_update(self, delta_time: float) -> bool | None:
+        self.game_engine.update(delta_time)
+
+
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
         if button == arcade.MOUSE_BUTTON_LEFT:
             target = self.game_engine._find_tile_at(x, y, "Plants_Grid")
             self.game_engine.plant_manager.spawn_plant("peashooter", target)
+
+    def get_game_engine(self):
+        return self.game_engine

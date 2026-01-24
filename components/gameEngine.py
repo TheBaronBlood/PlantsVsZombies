@@ -36,9 +36,16 @@ class GameEngine:
 
     def load_manager(self):
         """Erstellung der Manager für die Game Logic"""
-        self.plant_manager = PlantManager(self.plant_sprite_list, self.scene)
-        self.zombie_manager = ZombieManager(self.zombie_sprite_list, self.scene)
         self.projectile_manager = ProjectileManager(self.projectile_sprite_list, self.scene)
+        self.plant_manager = PlantManager(self.plant_sprite_list,
+                                          self.projectile_manager,
+                                          self.scene)
+
+        self.zombie_manager = ZombieManager(self.zombie_sprite_list,
+                                            self.projectile_manager,
+                                            self.scene)
+
+
 
     def _find_tile_at(self, x: float, y: float, sprite_layer: str)-> arcade.Sprite:
         tiles = arcade.get_sprites_at_point((x,y), self.scene[sprite_layer])
@@ -63,9 +70,11 @@ class GameEngine:
         self.zombie_sprite_list.draw(pixelated=pixelated)
         self.projectile_sprite_list.draw(pixelated=pixelated)
 
-    def load_plants(self):
-        pass
 
+    def update(self, delta_time: float):
+        self.plant_sprite_list.update(delta_time)
+        self.zombie_sprite_list.update(delta_time)
+        self.projectile_sprite_list.update(delta_time)
 
 
     # TODO Ideen ausarbeiten was mit der GameEngine noch alles übernommen werdne kann
