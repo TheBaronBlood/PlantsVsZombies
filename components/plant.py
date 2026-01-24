@@ -3,6 +3,8 @@ __author__ = "Miro K."
 __copyright__ = "Electronic Arts (EA) and PopCap Games"
 __license__ = "Attribution-ShareAlike 4.0 International"
 
+import time
+
 # IMPORTS
 # Arcade Packages
 import arcade
@@ -20,20 +22,27 @@ class Plant(arcade.Sprite):
         self,
         name,
         health,
-        sprite_texture,
-        bullet_texture
+        texture,
     ) -> None:
-        super().__init__(path_or_texture=sprite_texture, scale=c.SCALE_FACTOR)
+        super().__init__(scale=c.SCALE_FACTOR)
 
         self.name = name
         self.health = health
         self.state = c.IDLE
         self.shoot_timer = 0
 
-        self.sprite_texture = sprite_texture
-        self.bullet_texture = bullet_texture
+        self.sprite_texture = None
+        self.bullet_texture = None
+        self._split_texture(texture)
 
 
+    def _split_texture(self, path):
+        sprite_sheet = arcade.load_spritesheet(path)
+        texture = sprite_sheet.get_texture_grid((32, 32), 2, 2)
+        self.sprite_texture = texture[0]
+        self.bullet_texture = texture[1]
+
+        self.texture = texture[0]
     def take_damage(self, damage: int) -> None:
         pass
 
@@ -63,24 +72,22 @@ class Sun(Plant):
         Plant.__init__(self,
                        "sunf",
                        100,
-                       ":sprites:sunflower/sunflower.png",
-                       ":sprites:bullets/sunflower_bullet.png") # TODO - IDLE klasse definieren
+                       ":sprites:sunflower/sunflower.png")
+        # TODO - IDLE klasse definieren
 
 class Sunflower(Plant):
     def __init__(self):
         Plant.__init__(self,
                        "sunflower",
                        100,
-                       ":sprites:sunflower/sunflower.png",
-                       ":sprites:bullets/sunflower_bullet.png")
+                       ":sprites:sunflower/sunflower.png")
 
 class PeaShooter(Plant):
     def __init__(self, projectile_manager: ProjectileManager):
         Plant.__init__(self,
                        "peashooter",
                        100,
-                       ":sprites:peashooter/peashooter.png",
-                       ":sprites:bullets/peashooter_bullet.png")
+                       ":sprites:peashooter/peashooter.png")
 
         self.projectile_manager = projectile_manager
 
@@ -88,12 +95,7 @@ class PeaShooter(Plant):
         # TODO erstellen das man einfach durch Namenkonventioinen die richtige sprites geladen werden
 
     def attacking(self):
-        bullet = Projectile(10, self.bullet_texture)
-
-        bullet.center_x = self.center_x
-        bullet.center_y = self.center_y
-
-        self.projectile_manager.spawn_projectile(bullet)
+        self.projectile_manager.spawn_projectile(Projectile(self.center_x, self.center_y, 10, self.bullet_texture))
 
 
     def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
@@ -129,8 +131,12 @@ class PlantManager:
         return self.plant_sprite_list.append(plant)
 
     def spawn_plant(self, name: str, tile: arcade.Sprite) -> PeaShooter | None:
-        if "peashooter" == name:
-            new_plant = PeaShooter(self.projectileManager)
+        if not arcade.get_sprites_at_point((tile.center_x,tile.center_y) , self.plant_sprite_list):
+            new_plant = None
+            if "peashooter" == name:
+                new_plant = PeaShooter(self.projectileManager)
+            if "sunflower" == name:
+                new_plant = Sunflower()
             new_plant .center_x = tile.center_x
             new_plant .center_y = tile.center_y
 

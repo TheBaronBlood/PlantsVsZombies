@@ -24,10 +24,12 @@ import constants as c
 class Projectile(arcade.Sprite):
     def __init__(
         self,
+        x,
+        y,
         speed,
         bullet_texture,
     ) -> None:
-        super().__init__(path_or_texture=bullet_texture, scale=c.SCALE_FACTOR)
+        super().__init__(path_or_texture=bullet_texture, scale=c.SCALE_FACTOR, center_x=x, center_y=y)
 
         self.speed = speed
         self.velocity = Vec2(self.speed, 0) # Bewegt es nach Rechts
