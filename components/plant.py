@@ -95,7 +95,7 @@ class PeaShooter(Plant):
         # TODO erstellen das man einfach durch Namenkonventioinen die richtige sprites geladen werden
 
     def attacking(self):
-        self.projectile_manager.spawn_projectile(Projectile(self.center_x, self.center_y, 5, self.bullet_texture))
+        self.projectile_manager.spawn_projectile(Projectile(self.center_x, self.center_y, 5, 10, self.bullet_texture))
 
 
     def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
@@ -118,8 +118,8 @@ class Repeater(Plant):
         # TODO erstellen das man einfach durch Namenkonventioinen die richtige sprites geladen werden
 
     def attacking(self):
-        self.projectile_manager.spawn_projectile(Projectile(self.center_x, self.center_y, 5, self.bullet_texture))
-        self.projectile_manager.spawn_projectile(Projectile(self.center_x + 40, self.center_y, 5, self.bullet_texture))
+        self.projectile_manager.spawn_projectile(Projectile(self.center_x, self.center_y, 5, 15, self.bullet_texture))
+        self.projectile_manager.spawn_projectile(Projectile(self.center_x + 40, self.center_y, 5, 15, self.bullet_texture))
 
 
     def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
@@ -142,7 +142,7 @@ class IcePeaShooter(Plant):
         # TODO erstellen das man einfach durch Namenkonventioinen die richtige sprites geladen werden
 
     def attacking(self):
-        self.projectile_manager.spawn_projectile(Projectile(self.center_x, self.center_y, 5, self.bullet_texture))
+        self.projectile_manager.spawn_projectile(Projectile(self.center_x, self.center_y, 5, 20, self.bullet_texture))
 
 
     def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:

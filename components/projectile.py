@@ -26,12 +26,14 @@ class Projectile(arcade.Sprite):
         self,
         x,
         y,
-        speed,
+        speed: int,
+        damage: int,
         bullet_texture,
     ) -> None:
         super().__init__(path_or_texture=bullet_texture, scale=c.SCALE_FACTOR, center_x=x, center_y=y)
 
         self.speed = speed
+        self.damage = damage
         self.velocity = Vec2(self.speed, 0) # Bewegt es nach Rechts
 
 

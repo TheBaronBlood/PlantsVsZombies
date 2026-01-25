@@ -10,7 +10,7 @@ import arcade.gui
 
 # Math
 from pyglet.math import Vec2
-
+from tensorflow.python.ops.signal.spectral_ops import inverse_stft
 
 from components.gameEngine import GameEngine, UIEngine
 import constants as c
@@ -25,6 +25,8 @@ class GameView(arcade.View):
         self.game_engine.load_tilemap(":maps:map_1.tmx")
 
         self.selected_plant = "peashooter"
+
+        self.interval = 0
 
 
     def _setup(self):
@@ -44,6 +46,13 @@ class GameView(arcade.View):
     def on_update(self, delta_time: float) -> bool | None:
         self.game_engine.update(delta_time)
 
+        if self.interval >= 1:
+            self.game_engine.zombie_manager.spawn_zombie("Normal")
+            self.interval = 0
+        else:
+            print(self.interval)
+            self.interval += delta_time
+
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == arcade.key.KEY_1:
             self.selected_plant = "sunflower"
@@ -59,5 +68,12 @@ class GameView(arcade.View):
         if button == arcade.MOUSE_BUTTON_LEFT:
             self.game_engine.plant_manager.spawn_plant(self.selected_plant, target)
 
-    def get_game_engine(self):
-        return self.game_engine
+        # if button == arcade.MOUSE_BUTTON_RIGHT:
+        #     self.game_engine.zombie_manager.spawn_zombie("Normal")
+
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
+        try:
+            target = self.game_engine._find_tile_at(x, y, "Zombie_Grid")
+            print(target.center_y)
+        except:
+            pass
