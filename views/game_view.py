@@ -24,9 +24,7 @@ class GameView(arcade.View):
         self.game_engine = GameEngine()
         self.game_engine.load_tilemap(":maps:map_1.tmx")
 
-
-
-
+        self.selected_plant = "peashooter"
 
 
     def _setup(self):
@@ -46,13 +44,20 @@ class GameView(arcade.View):
     def on_update(self, delta_time: float) -> bool | None:
         self.game_engine.update(delta_time)
 
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        if symbol == arcade.key.KEY_1:
+            self.selected_plant = "sunflower"
+        if symbol == arcade.key.KEY_2:
+            self.selected_plant = "peashooter"
+        if symbol == arcade.key.KEY_3:
+            self.selected_plant = "icepeashooter"
+        if symbol == arcade.key.KEY_4:
+            self.selected_plant = "repeater"
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
         target = self.game_engine._find_tile_at(x, y, "Plants_Grid")
         if button == arcade.MOUSE_BUTTON_LEFT:
-            self.game_engine.plant_manager.spawn_plant("peashooter", target)
-        if button == arcade.MOUSE_BUTTON_RIGHT:
-            self.game_engine.plant_manager.spawn_plant("sunflower", target)
+            self.game_engine.plant_manager.spawn_plant(self.selected_plant, target)
 
     def get_game_engine(self):
         return self.game_engine

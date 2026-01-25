@@ -95,7 +95,7 @@ class PeaShooter(Plant):
         # TODO erstellen das man einfach durch Namenkonventioinen die richtige sprites geladen werden
 
     def attacking(self):
-        self.projectile_manager.spawn_projectile(Projectile(self.center_x, self.center_y, 10, self.bullet_texture))
+        self.projectile_manager.spawn_projectile(Projectile(self.center_x, self.center_y, 5, self.bullet_texture))
 
 
     def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
@@ -104,6 +104,55 @@ class PeaShooter(Plant):
         if self.shoot_timer >= SHOOT_COOLDOWN:
             self.attacking()
             self.shoot_timer = 0.0
+
+class Repeater(Plant):
+    def __init__(self, projectile_manager: ProjectileManager):
+        Plant.__init__(self,
+                       "repeater",
+                       100,
+                       ":sprites:peashooter/repeater.png")
+
+        self.projectile_manager = projectile_manager
+
+
+        # TODO erstellen das man einfach durch Namenkonventioinen die richtige sprites geladen werden
+
+    def attacking(self):
+        self.projectile_manager.spawn_projectile(Projectile(self.center_x, self.center_y, 5, self.bullet_texture))
+        self.projectile_manager.spawn_projectile(Projectile(self.center_x + 40, self.center_y, 5, self.bullet_texture))
+
+
+    def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
+        self.shoot_timer += delta_time
+        SHOOT_COOLDOWN = 1
+        if self.shoot_timer >= SHOOT_COOLDOWN:
+            self.attacking()
+            self.shoot_timer = 0.0
+
+class IcePeaShooter(Plant):
+    def __init__(self, projectile_manager: ProjectileManager):
+        Plant.__init__(self,
+                       "icepeashooter",
+                       100,
+                       ":sprites:peashooter/icepeashooter.png")
+
+        self.projectile_manager = projectile_manager
+
+
+        # TODO erstellen das man einfach durch Namenkonventioinen die richtige sprites geladen werden
+
+    def attacking(self):
+        self.projectile_manager.spawn_projectile(Projectile(self.center_x, self.center_y, 5, self.bullet_texture))
+
+
+    def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
+        self.shoot_timer += delta_time
+        SHOOT_COOLDOWN = 1
+        if self.shoot_timer >= SHOOT_COOLDOWN:
+            self.attacking()
+            self.shoot_timer = 0.0
+
+
 
 
 class Walnut(Plant):
@@ -137,6 +186,11 @@ class PlantManager:
                 new_plant = PeaShooter(self.projectileManager)
             if "sunflower" == name:
                 new_plant = Sunflower()
+            if "icepeashooter" == name:
+                new_plant = IcePeaShooter(self.projectileManager)
+            if "repeater" == name:
+                new_plant = Repeater(self.projectileManager)
+
             new_plant .center_x = tile.center_x
             new_plant .center_y = tile.center_y
 
