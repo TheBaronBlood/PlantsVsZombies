@@ -23,8 +23,8 @@ class Zombie(arcade.Sprite):
         self,
         name,
         health,
-        speed,
         texture,
+        speed = c.ZOMBIE_SPEED
     ) -> None:
         super().__init__(scale=c.SCALE_FACTOR)
 
@@ -54,11 +54,8 @@ class Zombie(arcade.Sprite):
         self.texture = texture[0]
     def take_damage(self, damage: int) -> None:
         self.health -= damage
-
-
     def get_pos(self):
         pass
-
     def idling(self):
         pass
     def attacking(self):
@@ -67,7 +64,6 @@ class Zombie(arcade.Sprite):
         self.state = c.IDLE
     def setAttack(self):
         self.state = c.ATTACK
-
     def handleState(self):
         if self.state == c.IDLE:
             self.idling()
@@ -75,18 +71,17 @@ class Zombie(arcade.Sprite):
             self.attacking()
 
 
-
 class ZombieNormal(Zombie):
     def __init__(self, projectile_sprite_list: arcade.SpriteList):
-        Zombie.__init__(self, "Normal", 100, 1,":sprites:zombie_normal/zombie_normal.png")
+        Zombie.__init__(self, "Normal", 100, ":sprites:zombie_normal/zombie_normal.png")
 
 class ZombiePylone(Zombie):
     def __init__(self, projectile_sprite_list: arcade.SpriteList):
-        Zombie.__init__(self, "Normal", 200, 1,":sprites:zombie_pylons/zombie_pylon.png")
+        Zombie.__init__(self, "Pylone", 200, ":sprites:zombie_pylons/zombie_pylone.png")
 
 class ZombieBucket(Zombie):
     def __init__(self, projectile_sprite_list: arcade.SpriteList):
-        Zombie.__init__(self, "Normal", 350, 1,":sprites:zombie_bucket/zombie_bucket.png")
+        Zombie.__init__(self, "Bucket", 350, ":sprites:zombie_bucket/zombie_bucket.png")
 
 
 # TODO Zombie VERTIGSTELLEN
@@ -115,7 +110,6 @@ class ZombieManager:
 
         if lane is None:
             r_lane = random.choice(self.scene["Zombie_Grid"])
-            print(r_lane)
             new_zombie.center_y = r_lane.center_y
             new_zombie.center_x = r_lane.center_x
         else:

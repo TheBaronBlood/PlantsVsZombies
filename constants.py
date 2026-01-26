@@ -15,3 +15,4 @@ ROOT_PATH = Path(__file__).parent
 # STATES
 IDLE = "idle"
 ATTACK = "attack"
+ZOMBIE_SPEED = 3

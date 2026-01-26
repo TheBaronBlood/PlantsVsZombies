@@ -12,7 +12,7 @@ from arcade import SpriteList
 from pyglet.math import Vec2
 
 # Game Imports
-from components.plant import PlantManager, Plant
+from components.plant import PlantManager, Plant, Sun
 from components.projectile import ProjectileManager, Projectile
 from components.zombie import ZombieManager, Zombie
 import constants as c
@@ -24,9 +24,10 @@ class GameEngine:
         self.scene: arcade.Scene | None = None
 
         # Erstellt Sprite Listen
-        self.plant_sprite_list: SpriteList = arcade.SpriteList()
+        self.plant_sprite_list: SpriteList[Plant] = arcade.SpriteList()
         self.zombie_sprite_list: SpriteList[Zombie] = arcade.SpriteList()
         self.projectile_sprite_list: SpriteList[Projectile] = arcade.SpriteList()
+        self.sun_sprite_list: SpriteList[Sun] = arcade.SpriteList()
 
         # Erstellung der Manager für die Game Logic
         self.plant_manager = None
@@ -40,6 +41,7 @@ class GameEngine:
         self.projectile_manager = ProjectileManager(self.projectile_sprite_list, self.scene)
         self.plant_manager = PlantManager(self.plant_sprite_list,
                                           self.projectile_manager,
+                                          self.sun_sprite_list,
                                           self.scene)
 
         self.zombie_manager = ZombieManager(self.zombie_sprite_list,
@@ -70,18 +72,22 @@ class GameEngine:
         self.plant_sprite_list.draw(pixelated=pixelated)
         self.zombie_sprite_list.draw(pixelated=pixelated)
         self.projectile_sprite_list.draw(pixelated=pixelated)
+        self.sun_sprite_list.draw(pixelated=pixelated)
 
 
     def update(self, delta_time: float):
         self.plant_sprite_list.update(delta_time)
         self.zombie_sprite_list.update(delta_time)
         self.projectile_sprite_list.update(delta_time)
+        self.sun_sprite_list.update(delta_time)
         self.on_zombie_hit()
         self.on_plant_hit(delta_time)
+        self.sun_despawn(delta_time)
 
     def on_zombie_hit(self):
         for zombie in self.zombie_sprite_list:
             collisions = arcade.check_for_collision_with_list(zombie, self.projectile_sprite_list)
+            rasenmeaher_list = arcade.check_for_collision_with_list(zombie, self.scene["Rasenmäher"])
             for projectile in collisions:
                 zombie.take_damage(projectile.damage)
                 # optional: Projectile entfernen, wenn es treffen soll
@@ -89,6 +95,14 @@ class GameEngine:
 
             if zombie.health <= 0:
                 zombie.remove_from_sprite_lists()
+
+            for rasenmeaher in rasenmeaher_list:
+                zombie.kill()
+                
+
+
+
+
 
     def on_plant_hit(self, delta_time: float):
         for zombie in self.zombie_sprite_list:
@@ -98,7 +112,7 @@ class GameEngine:
                     zombie.velocity = Vec2(0, 0)
                     zombie.rest_time += delta_time
                     if zombie.rest_time >= zombie.attack_time:
-                        print(plant)
+
                         plant.take_damage(zombie.damage)
 
                         # optional: Projectile entfernen, wenn es treffen soll
@@ -110,6 +124,15 @@ class GameEngine:
                     zombie.change_x = -zombie.speed
                     zombie.velocity = (-zombie.speed, 0)
                     zombie.rest_time = 0
+
+    def sun_despawn(self, delta_time: float):
+        for sun in self.sun_sprite_list:
+            sun.shoot_timer += delta_time
+            DESPAWN_COOLDOWN = 5
+            if sun.shoot_timer >= DESPAWN_COOLDOWN:
+                sun.remove_from_sprite_lists()
+
+
 
 
     # TODO Ideen ausarbeiten was mit der GameEngine noch alles übernommen werdne kann

@@ -3,6 +3,8 @@ __author__      = "Miro K."
 __copyright__   = "Electronic Arts (EA) and PopCap Games"
 __license__ = "Attribution-ShareAlike 4.0 International"
 
+import random
+
 # IMPORTS
 # Arcade Packages
 import arcade
@@ -26,7 +28,7 @@ class GameView(arcade.View):
         self.game_engine.load_manager()
 
         self.selected_plant = "peashooter"
-
+        self.sun_score = 50
         self.interval = 0
 
 
@@ -48,7 +50,8 @@ class GameView(arcade.View):
         self.game_engine.update(delta_time)
 
         if self.interval >= 1:
-            self.game_engine.zombie_manager.spawn_zombie("Normal", 3)
+            r = random.choice(["Normal", "Pylone", "Bucket"])
+            self.game_engine.zombie_manager.spawn_zombie(r)
             self.interval = 0
         else:
             self.interval += delta_time
@@ -68,6 +71,15 @@ class GameView(arcade.View):
         if target:
             if button == arcade.MOUSE_BUTTON_LEFT:
                 self.game_engine.plant_manager.spawn_plant(self.selected_plant, target)
+
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
+        try:
+            sun = arcade.get_sprites_at_point((x,y), self.game_engine.sun_sprite_list)
+            sun[-1].remove_from_sprite_lists()
+            self.sun_score += 25
+            print(self.sun_score)
+        except:
+            pass
 
         # if button == arcade.MOUSE_BUTTON_RIGHT:
         #     self.game_engine.zombie_manager.spawn_zombie("Normal")
