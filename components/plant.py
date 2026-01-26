@@ -44,7 +44,7 @@ class Plant(arcade.Sprite):
 
         self.texture = texture[0]
     def take_damage(self, damage: int) -> None:
-        pass
+        self.health-= damage
 
     def get_pos(self):
         pass

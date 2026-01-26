@@ -23,6 +23,7 @@ class GameView(arcade.View):
 
         self.game_engine = GameEngine()
         self.game_engine.load_tilemap(":maps:map_1.tmx")
+        self.game_engine.load_manager()
 
         self.selected_plant = "peashooter"
 
@@ -47,10 +48,9 @@ class GameView(arcade.View):
         self.game_engine.update(delta_time)
 
         if self.interval >= 1:
-            self.game_engine.zombie_manager.spawn_zombie("Normal")
+            self.game_engine.zombie_manager.spawn_zombie("Normal", 3)
             self.interval = 0
         else:
-            print(self.interval)
             self.interval += delta_time
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
@@ -65,15 +65,11 @@ class GameView(arcade.View):
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
         target = self.game_engine._find_tile_at(x, y, "Plants_Grid")
-        if button == arcade.MOUSE_BUTTON_LEFT:
-            self.game_engine.plant_manager.spawn_plant(self.selected_plant, target)
+        if target:
+            if button == arcade.MOUSE_BUTTON_LEFT:
+                self.game_engine.plant_manager.spawn_plant(self.selected_plant, target)
 
         # if button == arcade.MOUSE_BUTTON_RIGHT:
         #     self.game_engine.zombie_manager.spawn_zombie("Normal")
 
-    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
-        try:
-            target = self.game_engine._find_tile_at(x, y, "Zombie_Grid")
-            print(target.center_y)
-        except:
-            pass
+

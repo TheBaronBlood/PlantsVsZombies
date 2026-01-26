@@ -7,6 +7,7 @@ __license__ = "Attribution-ShareAlike 4.0 International"
 # Arcade Packages
 import arcade
 import arcade.gui
+from arcade import SpriteList
 # Math
 from pyglet.math import Vec2
 
@@ -23,16 +24,16 @@ class GameEngine:
         self.scene: arcade.Scene | None = None
 
         # Erstellt Sprite Listen
-        self.plant_sprite_list = arcade.SpriteList()
-        self.zombie_sprite_list = arcade.SpriteList()
-        self.projectile_sprite_list = arcade.SpriteList()
+        self.plant_sprite_list: SpriteList = arcade.SpriteList()
+        self.zombie_sprite_list: SpriteList[Zombie] = arcade.SpriteList()
+        self.projectile_sprite_list: SpriteList[Projectile] = arcade.SpriteList()
 
         # Erstellung der Manager für die Game Logic
         self.plant_manager = None
         self.zombie_manager = None
         self.projectile_manager = None
 
-        self.load_manager()
+        # self.load_manager()
 
     def load_manager(self):
         """Erstellung der Manager für die Game Logic"""
@@ -75,6 +76,40 @@ class GameEngine:
         self.plant_sprite_list.update(delta_time)
         self.zombie_sprite_list.update(delta_time)
         self.projectile_sprite_list.update(delta_time)
+        self.on_zombie_hit()
+        self.on_plant_hit(delta_time)
+
+    def on_zombie_hit(self):
+        for zombie in self.zombie_sprite_list:
+            collisions = arcade.check_for_collision_with_list(zombie, self.projectile_sprite_list)
+            for projectile in collisions:
+                zombie.take_damage(projectile.damage)
+                # optional: Projectile entfernen, wenn es treffen soll
+                projectile.remove_from_sprite_lists()
+
+            if zombie.health <= 0:
+                zombie.remove_from_sprite_lists()
+
+    def on_plant_hit(self, delta_time: float):
+        for zombie in self.zombie_sprite_list:
+            collisions = arcade.check_for_collision_with_list(zombie, self.plant_sprite_list)
+            if collisions:
+                for plant in collisions:
+                    zombie.velocity = Vec2(0, 0)
+                    zombie.rest_time += delta_time
+                    if zombie.rest_time >= zombie.attack_time:
+                        print(plant)
+                        plant.take_damage(zombie.damage)
+
+                        # optional: Projectile entfernen, wenn es treffen soll
+                    if plant.health <= 0:
+                        zombie.velocity = Vec2(-zombie.speed, 0)
+                        plant.remove_from_sprite_lists()
+            else:
+                if zombie.change_x == 0:
+                    zombie.change_x = -zombie.speed
+                    zombie.velocity = (-zombie.speed, 0)
+                    zombie.rest_time = 0
 
 
     # TODO Ideen ausarbeiten was mit der GameEngine noch alles übernommen werdne kann
