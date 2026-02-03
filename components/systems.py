@@ -112,6 +112,8 @@ class ShootingSystem:
         for plant in self.context.plants:
             if not hasattr(plant, "bullet_texture"):
                 continue
+            if plant.name == "sunflower":
+                continue
 
             plant.shoot_timer += delta_time
             cooldown = 1.0
