@@ -3,18 +3,12 @@ __author__      = "Miro K."
 __copyright__   = "Electronic Arts (EA) and PopCap Games"
 __license__ = "Attribution-ShareAlike 4.0 International"
 
-import random
-
 # IMPORTS
 # Arcade Packages
 import arcade
 import arcade.gui
 
-# Math
-from pyglet.math import Vec2
-from tensorflow.python.ops.signal.spectral_ops import inverse_stft
-
-from components.gameEngine import GameEngine, UIEngine
+from components.gameEngine import GameEngine
 import constants as c
 
 # TODO GameView zum Laufen Kriegen
@@ -29,7 +23,6 @@ class GameView(arcade.View):
 
         self.selected_plant = "peashooter"
         self.sun_score = 50
-        self.interval = 0
 
 
     def _setup(self):
@@ -49,13 +42,6 @@ class GameView(arcade.View):
     def on_update(self, delta_time: float) -> bool | None:
         self.game_engine.update(delta_time)
 
-        if self.interval >= 1:
-            r = random.choice(["Normal", "Pylone", "Bucket"])
-            self.game_engine.zombie_manager.spawn_zombie(r)
-            self.interval = 0
-        else:
-            self.interval += delta_time
-
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == arcade.key.KEY_1:
             self.selected_plant = "sunflower"
@@ -73,15 +59,10 @@ class GameView(arcade.View):
                 self.game_engine.plant_manager.spawn_plant(self.selected_plant, target)
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
-        try:
-            sun = arcade.get_sprites_at_point((x,y), self.game_engine.sun_sprite_list)
-            sun[-1].remove_from_sprite_lists()
-            self.sun_score += 25
+        collected = self.game_engine.collect_sun_at(x, y)
+        if collected:
+            self.sun_score += collected
             print(self.sun_score)
-        except:
-            pass
 
         # if button == arcade.MOUSE_BUTTON_RIGHT:
         #     self.game_engine.zombie_manager.spawn_zombie("Normal")
-
-

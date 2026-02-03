@@ -6,7 +6,6 @@ __license__ = "Attribution-ShareAlike 4.0 International"
 # IMPORTS
 # Arcade Packages
 import arcade
-import arcade.gui
 from arcade import SpriteList
 # Math
 from pyglet.math import Vec2
@@ -15,6 +14,7 @@ from pyglet.math import Vec2
 from components.plant import PlantManager, Plant, Sun
 from components.projectile import ProjectileManager, Projectile
 from components.zombie import ZombieManager, Zombie
+from components.systems import CombatSystem, SpawnSystem, SunSystem
 import constants as c
 
 
@@ -34,6 +34,10 @@ class GameEngine:
         self.zombie_manager = None
         self.projectile_manager = None
 
+        self.combat_system = None
+        self.spawn_system = None
+        self.sun_system = None
+
         # self.load_manager()
 
     def load_manager(self):
@@ -48,6 +52,18 @@ class GameEngine:
                                             self.projectile_manager,
                                             self.scene)
 
+        self.combat_system = CombatSystem(
+            self.zombie_sprite_list,
+            self.plant_sprite_list,
+            self.projectile_sprite_list,
+            self.scene,
+        )
+        self.spawn_system = SpawnSystem(
+            self.zombie_manager,
+            ["Normal", "Pylone", "Bucket"],
+            spawn_interval=1.0,
+        )
+        self.sun_system = SunSystem(self.sun_sprite_list)
 
 
     def _find_tile_at(self, x: float, y: float, sprite_layer: str)-> arcade.Sprite:
@@ -80,57 +96,13 @@ class GameEngine:
         self.zombie_sprite_list.update(delta_time)
         self.projectile_sprite_list.update(delta_time)
         self.sun_sprite_list.update(delta_time)
-        self.on_zombie_hit()
-        self.on_plant_hit(delta_time)
-        self.sun_despawn(delta_time)
+        self.combat_system.handle_projectile_hits()
+        self.combat_system.handle_plant_hits(delta_time)
+        self.sun_system.despawn(delta_time)
+        self.spawn_system.update(delta_time)
 
-    def on_zombie_hit(self):
-        for zombie in self.zombie_sprite_list:
-            collisions = arcade.check_for_collision_with_list(zombie, self.projectile_sprite_list)
-            rasenmeaher_list = arcade.check_for_collision_with_list(zombie, self.scene["Rasenmäher"])
-            for projectile in collisions:
-                zombie.take_damage(projectile.damage)
-                # optional: Projectile entfernen, wenn es treffen soll
-                projectile.remove_from_sprite_lists()
-
-            if zombie.health <= 0:
-                zombie.remove_from_sprite_lists()
-
-            for rasenmeaher in rasenmeaher_list:
-                zombie.kill()
-                
-
-
-
-
-
-    def on_plant_hit(self, delta_time: float):
-        for zombie in self.zombie_sprite_list:
-            collisions = arcade.check_for_collision_with_list(zombie, self.plant_sprite_list)
-            if collisions:
-                for plant in collisions:
-                    zombie.velocity = Vec2(0, 0)
-                    zombie.rest_time += delta_time
-                    if zombie.rest_time >= zombie.attack_time:
-
-                        plant.take_damage(zombie.damage)
-
-                        # optional: Projectile entfernen, wenn es treffen soll
-                    if plant.health <= 0:
-                        zombie.velocity = Vec2(-zombie.speed, 0)
-                        plant.remove_from_sprite_lists()
-            else:
-                if zombie.change_x == 0:
-                    zombie.change_x = -zombie.speed
-                    zombie.velocity = (-zombie.speed, 0)
-                    zombie.rest_time = 0
-
-    def sun_despawn(self, delta_time: float):
-        for sun in self.sun_sprite_list:
-            sun.shoot_timer += delta_time
-            DESPAWN_COOLDOWN = 5
-            if sun.shoot_timer >= DESPAWN_COOLDOWN:
-                sun.remove_from_sprite_lists()
+    def collect_sun_at(self, x: float, y: float) -> int:
+        return self.sun_system.collect_at(x, y)
 
 
 
