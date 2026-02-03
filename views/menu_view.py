@@ -1,43 +1,25 @@
-"""Zeigt das Start-Menü"""
+"""Simple menu view placeholder."""
 __author__ = "Miro K."
 __copyright__ = "Electronic Arts (EA) and PopCap Games"
 __license__ = "Attribution-ShareAlike 4.0 International"
 
-# IMPORTS
-# Arcade Packages
 import arcade
-import arcade.gui
 
-# Math
-from pyglet.math import Vec2
 
-# Game Imports
-from components.plant import Plant, PlantManager
-from components.zombie import Zombie, ZombieManager
-from components.projectile import Projectile, ProjectileManager
-
-from components.gameEngine import GameEngine, UIEngine
-from constants import *
-
-# TODO Ein Menü Erstellen
 class MenuView(arcade.View):
-    def __init__(self):
-        super().__init__()
-
-    def _setup(self):
-        pass
-
-    def on_show(self):
-        pass
-
-    def on_hide(self):
-        pass
-
     def on_draw(self):
-        pass
+        self.clear()
+        arcade.draw_text(
+            "Press Enter to Start",
+            self.window.width / 2,
+            self.window.height / 2,
+            arcade.color.WHITE,
+            24,
+            anchor_x="center",
+        )
 
-    def on_update(self, delta_time):
-        pass
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.ENTER:
+            from views.game_view import GameView
 
-
-
+            self.window.show_view(GameView())

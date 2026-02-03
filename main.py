@@ -1,33 +1,29 @@
 #!/usr/bin/env python
-"""View, dass das Game an sich rendert und Handled"""
-__author__      = "Miro K."
-__copyright__   = "Electronic Arts (EA) and PopCap Games"
+"""Entry point for the game."""
+__author__ = "Miro K."
+__copyright__ = "Electronic Arts (EA) and PopCap Games"
 __license__ = "Attribution-ShareAlike 4.0 International"
 
 import arcade
 
-from constants import *
+import constants as c
 from views.game_view import GameView
 
-from views.menu_view import MenuView
 
 class MyWindow(arcade.Window):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+        super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, c.SCREEN_TITLE, resizable=True)
+        arcade.resources.add_resource_handle("sprites", str(c.ROOT_PATH / "assets" / "sprites"))
+        arcade.resources.add_resource_handle("maps", str(c.ROOT_PATH / "assets" / "maps"))
+        arcade.resources.add_resource_handle("sounds", str(c.ROOT_PATH / "assets" / "sounds"))
+        arcade.resources.add_resource_handle("data", str(c.ROOT_PATH / "assets" / "data"))
 
-        # Verbindet den Ordnerpfad sicher mit den Unterordnern
-        arcade.resources.add_resource_handle("sprites", str(ROOT_PATH / "assets" / "sprites"))
-        arcade.resources.add_resource_handle("maps", str(ROOT_PATH / "assets" / "maps"))
-        arcade.resources.add_resource_handle("sounds", str(ROOT_PATH / "assets" / "sounds"))
-        arcade.resources.add_resource_handle("data", str(ROOT_PATH / "assets" / "data"))
-#-----------------------------------------------------------#
-# main funktion with Window
-#-----------------------------------------------------------#
-def GameStart():
+
+def game_start() -> None:
     window = MyWindow()
-    main_view = GameView()
-    window.show_view(main_view)
+    window.show_view(GameView())
     arcade.run()
 
+
 if __name__ == "__main__":
-    GameStart()
+    game_start()
