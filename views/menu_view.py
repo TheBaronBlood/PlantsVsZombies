@@ -7,6 +7,10 @@ import arcade
 
 
 class MenuView(arcade.View):
+    def __init__(self) -> None:
+        super().__init__()
+        self._scheduled_start = False
+
     def on_draw(self):
         self.clear()
         arcade.draw_text(
@@ -20,6 +24,17 @@ class MenuView(arcade.View):
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.ENTER:
+            self._schedule_game_start()
+
+    def _schedule_game_start(self) -> None:
+        if self._scheduled_start:
+            return
+        self._scheduled_start = True
+
+        def _show_game_view(_delta_time: float) -> None:
+            arcade.unschedule(_show_game_view)
             from views.game_view import GameView
 
             self.window.show_view(GameView())
+
+        arcade.schedule(lambda delta_time: _show_game_view(delta_time), 0)
