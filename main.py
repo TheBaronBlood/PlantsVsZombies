@@ -7,7 +7,7 @@ __license__ = "Attribution-ShareAlike 4.0 International"
 import arcade
 
 import constants as c
-from views.game_view import GameView
+from views.menu_view import MenuView
 
 
 class MyWindow(arcade.Window):
@@ -21,7 +21,7 @@ class MyWindow(arcade.Window):
 
 def game_start() -> None:
     window = MyWindow()
-    window.show_view(GameView())
+    window.show_view(MenuView())
     arcade.run()
 
 
