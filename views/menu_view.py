@@ -31,10 +31,10 @@ class MenuView(arcade.View):
             return
         self._scheduled_start = True
 
-        def _show_game_view(_delta_time: float) -> None:
-            arcade.unschedule(_show_game_view)
-            from views.game_view import GameView
+        def _unschedule(_delta_time: float) -> None:
+            arcade.unschedule(_unschedule)
 
-            self.window.show_view(GameView())
+        from views.game_view import GameView
 
-        arcade.schedule(lambda delta_time: _show_game_view(delta_time), 0)
+        arcade.schedule(lambda _dt: self.window.show_view(GameView()), 0)
+        arcade.schedule(_unschedule, 0)
