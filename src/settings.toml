@@ -1,0 +1,33 @@
+[general]
+game_title = "Pflanzen Gegen Zombies"
+
+[plants]
+scale = 2.85
+health = 100
+
+[plants.sunflower]
+
+[plants.peashooter]
+
+[plants.icepeashooter]
+
+[plants.repeater]
+
+[plants.walnut]
+health = 300
+
+[plants.blumerrang]
+
+
+[zombie]
+scale = 2.85
+speed = 1
+health = 100
+
+[zombie.normal]
+
+[zombie.pylone]
+health = 150
+
+[zombie.bucket]
+health = 200

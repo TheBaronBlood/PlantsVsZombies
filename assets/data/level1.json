@@ -1,0 +1,10 @@
+{
+  "id": "level_01",
+  "sun": 50,
+  "map": "maps/day_01.csv",
+  "waves": [
+    { "time": 5, "zombie": "basic", "lane": 2 },
+    { "time": 12, "zombie": "cone", "lane": 4 },
+    { "time": 20, "zombie": "basic", "lane": 1 }
+  ]
+}
