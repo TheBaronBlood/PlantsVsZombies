@@ -6,7 +6,7 @@ from pyglet.math import Vec2
 
 from src.components.world import GameContext
 from src.components.entities import Sun, Projectile, Sunflower
-from src.components.managers import PlantManager, ZombieManager, ProjectileManager
+from src.components.managers import ZombieManager, ProjectileManager
 
 
 class CombatSystem:
@@ -97,15 +97,54 @@ class SunSystem:
 class SpawnSystem:
     def __init__(self, zombie_manager: ZombieManager) -> None:
         self.zombie_manager = zombie_manager
-        self.timer = 0.0
-        self.interval = 1.0
-        self.zombie_names = ["Normal", "Pylone", "Bucket"]
+        self.elapsed = 0.0
+        self.waves: list[dict] = []
+        self.next_index = 0
 
     def update(self, delta_time: float) -> None:
-        self.timer += delta_time
-        if self.timer >= self.interval:
-            self.zombie_manager.spawn(random.choice(self.zombie_names))
-            self.timer = 0.0
+        if not self.waves:
+            return
+        self.elapsed += delta_time
+        while self.next_index < len(self.waves):
+            wave = self.waves[self.next_index]
+            if wave["time"] > self.elapsed:
+                break
+            self.zombie_manager.spawn(wave["zombie"], wave.get("lane"))
+            self.next_index += 1
+
+    def set_waves(self, waves: list[dict] | None) -> None:
+        self.elapsed = 0.0
+        self.next_index = 0
+        normalized: list[dict] = []
+        for wave in waves or []:
+            parsed = self._parse_wave(wave)
+            if parsed:
+                normalized.append(parsed)
+        self.waves = sorted(normalized, key=lambda w: w["time"])
+
+    def has_waves(self) -> bool:
+        return bool(self.waves)
+
+    def is_finished(self) -> bool:
+        return self.next_index >= len(self.waves)
+
+    def _parse_wave(self, wave: dict) -> dict | None:
+        if not isinstance(wave, dict):
+            return None
+        if "time" not in wave or "zombie" not in wave:
+            return None
+        try:
+            time_value = float(wave["time"])
+        except (TypeError, ValueError):
+            return None
+        zombie = str(wave["zombie"])
+        lane = wave.get("lane")
+        if lane is not None:
+            try:
+                lane = int(lane)
+            except (TypeError, ValueError):
+                lane = None
+        return {"time": time_value, "zombie": zombie, "lane": lane}
 
 
 class ShootingSystem:

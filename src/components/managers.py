@@ -45,11 +45,12 @@ class ZombieManager:
 
     def spawn(self, name: str, lane: int | None = None) -> None:
         zombie = None
-        if name == "Normal":
+        key = (name or "").strip().lower()
+        if key in ("normal"):
             zombie = ZombieNormal()
-        elif name == "Pylone":
+        elif key in ("pylone"):
             zombie = ZombiePylone()
-        elif name == "Bucket":
+        elif key in ("bucket"):
             zombie = ZombieBucket()
 
         if not zombie:

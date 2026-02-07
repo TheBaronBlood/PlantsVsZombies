@@ -1,7 +1,7 @@
 import arcade
 
-import constants as c
-from views import GameView
+import src.constants as c
+from src.views import GameView
 
 
 class MyWindow(arcade.Window):

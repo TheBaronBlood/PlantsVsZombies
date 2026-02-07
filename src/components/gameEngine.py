@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 import src.constants as c
 import arcade
 
@@ -33,6 +36,22 @@ class GameEngine:
             self.context.scene = None
             print(f"Fehler beim Laden der Tilemap '{map_file}': {exc}")
             return False
+
+    def load_level(self, level_path: str | Path) -> dict:
+        level_path = Path(level_path)
+        with level_path.open("r", encoding="utf-8") as f:
+            level_data = json.load(f)
+
+        map_name = level_data.get("map")
+        if not map_name:
+            raise ValueError("Level map missing.")
+
+        map_resource = map_name if str(map_name).startswith(":") else f":maps:{map_name}"
+        if not self.load_tilemap(map_resource):
+            raise RuntimeError(f"Tilemap load failed: {map_resource}")
+
+        self.spawn_system.set_waves(level_data.get("waves", []))
+        return level_data
 
     def find_tile_at(self, x: float, y: float, layer: str) -> arcade.Sprite | None:
         if not self.context.scene or layer not in self.context.scene:
