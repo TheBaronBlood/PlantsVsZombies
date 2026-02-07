@@ -10,7 +10,8 @@ class GameView(arcade.View):
         self.ui_manager = arcade.gui.UIManager()
 
         self.engine = GameEngine()
-        self.engine.load_tilemap(":maps:map_1.tmx")
+        if not self.engine.load_tilemap(":maps:map_1.tmx"):
+            raise RuntimeError("Tilemap konnte nicht geladen werden.")
 
         self.selected_plant = "peashooter"
         self.sun_score = 50

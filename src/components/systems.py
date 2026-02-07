@@ -19,8 +19,12 @@ class CombatSystem:
 
     def _handle_projectile_hits(self) -> None:
         for zombie in self.context.zombies:
+            mower_layer = None
+            if self.context.scene and "Rasenmäher" in self.context.scene:
+                mower_layer = self.context.scene["Rasenmäher"]
+
             collisions = arcade.check_for_collision_with_list(zombie, self.context.projectiles)
-            mower_hits = arcade.check_for_collision_with_list(zombie, self.context.scene["Rasenmäher"])
+            mower_hits = arcade.check_for_collision_with_list(zombie, mower_layer) if mower_layer else []
             for projectile in collisions:
                 zombie.take_damage(projectile.damage)
                 projectile.remove_from_sprite_lists()
@@ -40,6 +44,8 @@ class CombatSystem:
                     zombie.rest_time += delta_time
                     if zombie.rest_time >= zombie.attack_time:
                         plant.take_damage(zombie.damage)
+                        zombie.rest_time = 0.0
+
                     if plant.health <= 0:
                         zombie.velocity = Vec2(-zombie.speed, 0)
                         plant.remove_from_sprite_lists()
@@ -54,18 +60,22 @@ class SunSystem:
         self.context = context
 
     def update(self, delta_time: float) -> None:
-        self._spawn_sunflowers(delta_time)
+        self._spawn_sun(delta_time)
         self._despawn_suns(delta_time)
 
-    def _spawn_sunflowers(self, delta_time: float) -> None:
+    def _spawn_sun(self, delta_time: float) -> None:
         for plant in self.context.plants:
             if not isinstance(plant, Sunflower):
                 continue
+
             plant.shoot_timer += delta_time
-            cooldown = random.randint(5, 20)
-            if plant.shoot_timer >= cooldown:
+            if not hasattr(plant, "sun_cooldown"):
+                plant.sun_cooldown = random.uniform(5.0, 20.0)
+
+            if plant.shoot_timer >= plant.sun_cooldown:
                 self.context.suns.append(plant.create_sun())
                 plant.shoot_timer = 0.0
+                plant.sun_cooldown = random.uniform(5.0, 20.0)
 
     def _despawn_suns(self, delta_time: float) -> None:
         for sun in self.context.suns:

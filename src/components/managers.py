@@ -55,10 +55,17 @@ class ZombieManager:
         if not zombie:
             return
 
+        lane_sprites = self.context.scene[
+            "Zombie_Grid"] if self.context.scene and "Zombie_Grid" in self.context.scene else None
+        if not lane_sprites:
+            return
+
         if lane is None:
-            lane_sprite = random.choice(self.context.scene["Zombie_Grid"])
+            lane_sprite = random.choice(lane_sprites)
         else:
-            lane_sprite = self.context.scene["Zombie_Grid"][lane - 1]
+            if lane < 1 or lane > len(lane_sprites):
+                return
+            lane_sprite = lane_sprites[lane - 1]
 
         zombie.center_x = lane_sprite.center_x
         zombie.center_y = lane_sprite.center_y

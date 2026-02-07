@@ -20,7 +20,7 @@ class GameEngine:
         self.sun_system = SunSystem(self.context)
         self.shooting_system = ShootingSystem(self.context, self.projectile_manager)
 
-    def load_tilemap(self, map_file: str) -> None:
+    def load_tilemap(self, map_file: str) -> bool:
         try:
             self.context.tilemap = arcade.load_tilemap(
                 map_file,
@@ -28,10 +28,15 @@ class GameEngine:
                 offset=Vec2(0, 0),
             )
             self.context.scene = arcade.Scene.from_tilemap(self.context.tilemap)
+            return True
         except Exception as exc:
+            self.context.scene = None
             print(f"Fehler beim Laden der Tilemap '{map_file}': {exc}")
+            return False
 
     def find_tile_at(self, x: float, y: float, layer: str) -> arcade.Sprite | None:
+        if not self.context.scene or layer not in self.context.scene:
+            return None
         tiles = arcade.get_sprites_at_point((x, y), self.context.scene[layer])
         return tiles[0] if tiles else None
 
