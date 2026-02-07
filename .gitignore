@@ -13,7 +13,3 @@ build/
 *.spec
 assets/.DS_Store
 *.log
-*.iml
-out
-gen
-/old/*
