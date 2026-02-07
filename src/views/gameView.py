@@ -100,7 +100,7 @@ class GameView(arcade.View):
     def _advance_level(self) -> None:
         next_index = self.level_index + 1
         if next_index >= len(self.levels):
-            self.window.show_view(EndView())
+            self.window.show_view(EndView("GEWONNEN"))
             return
         self._load_level_index(next_index)
 
