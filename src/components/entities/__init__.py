@@ -5,9 +5,9 @@ __disclaimer__ = (
     "not affiliated with or endorsed by EA or PopCap."
 )
 
-from .plants import Sun
-from .zombies import
+from .plants import Sun, Projectile, Sunflower, PeaShooter, IcePeaShooter, Repeater, Walnut, Blumerang
+from .zombies import ZombieNormal, ZombiePylone, ZombieBucket
 
 __all__ = ["Sun", "Projectile",
-           "Sunnflower", "PeaShooter", "IcePeaShooter", "Repeater", "Walnut", "Blumerang",
+           "Sunflower", "PeaShooter", "IcePeaShooter", "Repeater", "Walnut", "Blumerang",
            "ZombieNormal", "ZombiePylone", "ZombieBucket"]
