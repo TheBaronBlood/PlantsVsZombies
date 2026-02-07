@@ -1,0 +1,17 @@
+{
+  "id": "level_01",
+  "sun": 50,
+  "map": "map_1.tmx",
+  "waves": [
+    { "time": 5, "zombie": "normal", "lane": 2 },
+    { "time": 12, "zombie": "pylone", "lane": 4 },
+    { "time": 20, "zombie": "normal", "lane": 1 },
+    { "time": 30, "zombie": "normal", "lane": 2 },
+    { "time": 30, "zombie": "pylone", "lane": 4 },
+    { "time": 45, "zombie": "normal", "lane": 5 },
+    { "time": 44, "zombie": "normal", "lane": 3 },
+    { "time": 45, "zombie": "normal", "lane": 2 },
+    { "time": 45, "zombie": "pylone", "lane": 2 },
+    { "time": 46, "zombie": "pylone", "lane": 1 }
+  ]
+}

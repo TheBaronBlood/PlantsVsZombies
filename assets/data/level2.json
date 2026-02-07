@@ -1,0 +1,10 @@
+{
+  "id": "level_02",
+  "sun": 50,
+  "map": "map_1.tmx",
+  "waves": [
+    { "time": 5, "zombie": "normal", "lane": 2 },
+    { "time": 12, "zombie": "pylone", "lane": 4 },
+    { "time": 20, "zombie": "normal", "lane": 1 }
+  ]
+}
