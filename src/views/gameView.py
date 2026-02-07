@@ -64,9 +64,9 @@ class GameView(arcade.View):
         if symbol == arcade.key.KEY_2:
             self.selected_plant = "peashooter"
         if symbol == arcade.key.KEY_3:
-            self.selected_plant = "icepeashooter"
+            self.selected_plant = "blumerrang"
         if symbol == arcade.key.KEY_4:
-            self.selected_plant = "repeater"
+            self.selected_plant = "walnut"
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         if button != arcade.MOUSE_BUTTON_LEFT:

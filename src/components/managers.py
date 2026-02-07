@@ -25,6 +25,9 @@ class PlantManager:
             "peashooter": PeaShooter,
             "icepeashooter": IcePeaShooter,
             "repeater": Repeater,
+            "walnut": Walnut,
+            "blumerrang": Blumerrang,
+            "potatomine": Potatomine,
         }
 
     def spawn(self, name: str, tile: arcade.Sprite) -> None:

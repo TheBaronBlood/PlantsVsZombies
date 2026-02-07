@@ -5,9 +5,9 @@ world_scale = 1
 [plants]
 scale = 1
 health = 100
-damage = 10
-cooldown = 1.0
-projectile_speed = 100
+damage = 20
+cooldown = 1.75
+projectile_speed = 75
 extra_projectiles = 0
 
     [plants.sun]
@@ -16,25 +16,49 @@ extra_projectiles = 0
     [plants.sunflower]
     cost = 50
     sun_produce = 25
+    plant_frames = 1
+    bullet_frames = 1
 
     [plants.peashooter]
     cost = 100
+    plant_frames = 1
+    bullet_frames = 1
 
     [plants.icepeashooter]
-    cost = 150
-    damage = 20
+    cost = 200
+    damage = 25
+    plant_frames = 1
+    bullet_frames = 1
 
     [plants.repeater]
-    cost = 200
-    damage = 15
+    cost = 150
+    damage = 20
     extra_projectiles = 1
+    plant_frames = 1
+    bullet_frames = 1
 
     [plants.walnut]
     cost = 150
     health = 300
+    plant_frames = 2
+    bullet_frames = 0
+    plant_health_stages = [130]
 
     [plants.blumerrang]
     cost = 175
+    plant_frames = 1
+    bullet_frames = 10
+    projectile_pierce = true
+
+    [plants.potatomine]
+    plant_frames = 3
+    bullet_frames = 0
+    plant_stage_times = [5, 8]
+    explosion_damage = 999
+    explosion_trigger_x_tiles = 0.5
+    explosion_trigger_y_tiles = 0.4
+    explosion_radius_x_tiles = 0.75
+    explosion_radius_y_tiles = 0.6
 
 
 [zombie]

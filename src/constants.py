@@ -37,6 +37,7 @@ PLANTS_ICEPEASHOOTER = _merge_defaults(PLANTS_DEFAULTS, PLANTS.get("icepeashoote
 PLANTS_REPEATER = _merge_defaults(PLANTS_DEFAULTS, PLANTS.get("repeater"))
 PLANTS_WALNUT = _merge_defaults(PLANTS_DEFAULTS, PLANTS.get("walnut"))
 PLANTS_BLUMERRANG = _merge_defaults(PLANTS_DEFAULTS, PLANTS.get("blumerrang"))
+PLANTS_POTATOMINE = _merge_defaults(PLANTS_DEFAULTS, PLANTS.get("potatomine"))
 
 ZOMBIE_SCALE = ZOMBIE["scale"]
 ZOMBIE_SPEED = ZOMBIE["speed"]

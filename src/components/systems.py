@@ -9,11 +9,24 @@ from src.components.entities import Sun, Projectile, Sunflower
 from src.components.managers import ZombieManager, ProjectileManager
 
 
+def _get_plant_config(name: str) -> dict:
+    return {
+        "sunflower": c.PLANTS_SUNFLOWER,
+        "peashooter": c.PLANTS_PEASHOOTER,
+        "icepeashooter": c.PLANTS_ICEPEASHOOTER,
+        "repeater": c.PLANTS_REPEATER,
+        "walnut": c.PLANTS_WALNUT,
+        "blumerrang": c.PLANTS_BLUMERRANG,
+        "potatomine": c.PLANTS_POTATOMINE,
+    }.get(name, c.PLANTS_DEFAULTS)
+
+
 class CombatSystem:
     def __init__(self, context: GameContext) -> None:
         self.context = context
 
     def update(self, delta_time: float) -> None:
+        self._handle_potatomines()
         self._handle_projectile_hits()
         self._handle_plant_hits(delta_time)
 
@@ -26,8 +39,15 @@ class CombatSystem:
             collisions = arcade.check_for_collision_with_list(zombie, self.context.projectiles)
             mower_hits = arcade.check_for_collision_with_list(zombie, mower_layer) if mower_layer else []
             for projectile in collisions:
+                hit_targets = getattr(projectile, "_hit_targets", None)
+                if hit_targets is not None:
+                    target_id = id(zombie)
+                    if target_id in hit_targets:
+                        continue
+                    hit_targets.add(target_id)
                 zombie.take_damage(projectile.damage)
-                projectile.remove_from_sprite_lists()
+                if not getattr(projectile, "pierce", False):
+                    projectile.remove_from_sprite_lists()
 
             if zombie.health <= 0:
                 zombie.remove_from_sprite_lists()
@@ -54,6 +74,61 @@ class CombatSystem:
                     zombie.change_x = -zombie.speed
                     zombie.velocity = (-zombie.speed, 0)
                     zombie.rest_time = 0
+
+    def _handle_potatomines(self) -> None:
+        if not self.context.plants or not self.context.zombies:
+            return
+
+        tile_width = 32
+        tile_height = 32
+        if self.context.tilemap:
+            tile_width = self.context.tilemap.tile_width or tile_width
+            tile_height = self.context.tilemap.tile_height or tile_height
+
+        for plant in list(self.context.plants):
+            if getattr(plant, "name", "") != "potatomine":
+                continue
+            stage_times = getattr(plant, "_plant_stage_times", [])
+            if not stage_times:
+                continue
+            ready_time = sum(stage_times)
+            if getattr(plant, "_plant_anim_time", 0.0) < ready_time:
+                continue
+
+            plant_config = _get_plant_config(plant.name)
+            trigger_x_tiles = float(plant_config.get("explosion_trigger_x_tiles", 0.5))
+            trigger_y_tiles = float(plant_config.get("explosion_trigger_y_tiles", 0.4))
+            explosion_x_tiles = float(plant_config.get("explosion_radius_x_tiles", 0.75))
+            explosion_y_tiles = float(plant_config.get("explosion_radius_y_tiles", 0.6))
+
+            trigger_x_offset = tile_width * trigger_x_tiles
+            trigger_y_offset = tile_height * trigger_y_tiles
+            explosion_x = tile_width * explosion_x_tiles
+            explosion_y = tile_height * explosion_y_tiles
+
+            triggered = False
+            for zombie in self.context.zombies:
+                if abs(zombie.center_y - plant.center_y) > trigger_y_offset:
+                    continue
+                dx = zombie.center_x - plant.center_x
+                if 0 <= dx <= trigger_x_offset:
+                    triggered = True
+                    break
+
+            if not triggered:
+                continue
+
+            damage = int(plant_config.get("explosion_damage", 999))
+
+            for zombie in list(self.context.zombies):
+                if abs(zombie.center_x - plant.center_x) <= explosion_x and abs(
+                    zombie.center_y - plant.center_y
+                ) <= explosion_y:
+                    zombie.take_damage(damage)
+                    if zombie.health <= 0:
+                        zombie.remove_from_sprite_lists()
+
+            plant.remove_from_sprite_lists()
 
 class SunSystem:
     def __init__(self, context: GameContext) -> None:
@@ -156,50 +231,43 @@ class ShootingSystem:
         for plant in self.context.plants:
             if not hasattr(plant, "bullet_texture"):
                 continue
+            if getattr(plant, "bullet_animation", None) is None and getattr(plant, "bullet_texture", None) is None:
+                continue
             if plant.name == "sunflower":
                 continue
 
             plant.shoot_timer += delta_time
-            plant_config = self._get_plant_config(plant)
+            plant_config = _get_plant_config(getattr(plant, "name", ""))
             cooldown = float(plant_config.get("cooldown", 1.0))
 
             if plant.shoot_timer >= cooldown:
                 self._fire_projectile(plant, plant_config)
                 plant.shoot_timer = 0.0
 
-    def _get_plant_config(self, plant) -> dict:
-        name = getattr(plant, "name", "")
-        return {
-            "sunflower": c.PLANTS_SUNFLOWER,
-            "peashooter": c.PLANTS_PEASHOOTER,
-            "icepeashooter": c.PLANTS_ICEPEASHOOTER,
-            "repeater": c.PLANTS_REPEATER,
-            "walnut": c.PLANTS_WALNUT,
-            "blumerrang": c.PLANTS_BLUMERRANG,
-        }.get(name, c.PLANTS_DEFAULTS)
-
     def _fire_projectile(self, plant, plant_config: dict) -> None:
         damage = plant_config.get("damage", 10)
         projectile_speed = plant_config.get("projectile_speed", 5)
         extra_projectiles = int(plant_config.get("extra_projectiles", 0) or 0)
+        projectile_texture = getattr(plant, "bullet_animation", None) or plant.bullet_texture
+        pierce = bool(plant_config.get("projectile_pierce", False))
 
         for extra in range(extra_projectiles):
-            self.projectile_manager.spawn_projectile(
-                Projectile(
-                    plant.center_x,
-                    plant.center_y,
-                    projectile_speed,
-                    damage,
-                    plant.bullet_texture,
-                ),
-            )
-
-        self.projectile_manager.spawn_projectile(
-            Projectile(
+            projectile = Projectile(
                 plant.center_x,
                 plant.center_y,
                 projectile_speed,
                 damage,
-                plant.bullet_texture,
-            ),
+                projectile_texture,
+            )
+            projectile.pierce = pierce
+            self.projectile_manager.spawn_projectile(projectile)
+
+        projectile = Projectile(
+            plant.center_x,
+            plant.center_y,
+            projectile_speed,
+            damage,
+            projectile_texture,
         )
+        projectile.pierce = pierce
+        self.projectile_manager.spawn_projectile(projectile)
