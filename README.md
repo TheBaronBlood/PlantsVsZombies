@@ -44,6 +44,14 @@ Create a standalone exe with PyInstaller:
 python -m pip install pyinstaller
 pyinstaller --onefile --noconsole src/main.py
 ```
+Or use the provided PowerShell build script (recommended):
+```powershell
+.\tools\build.ps1
+```
+Custom venv python or output name:
+```powershell
+.\tools\build.ps1 -VenvPython "D:\Path\python.exe" -Name "PvZ"
+```
 
 ## Help
 If you see missing-module errors, re-check that your venv is activated and
