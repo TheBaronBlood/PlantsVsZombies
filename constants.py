@@ -1,4 +1,6 @@
 from pathlib import Path
+
+
 # Konstanten
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
@@ -9,3 +11,8 @@ SCALE_FACTOR = 2.85
 # paths
 ROOT_PATH = Path(__file__).parent
 
+
+# STATES
+IDLE = "idle"
+ATTACK = "attack"
+ZOMBIE_SPEED = 3

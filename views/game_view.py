@@ -1,52 +1,87 @@
+"""View, Zeigt das Spiel und handled den Spiel Verlauf"""
+__author__      = "Miro K."
+__copyright__   = "Electronic Arts (EA) and PopCap Games"
+__license__ = "Attribution-ShareAlike 4.0 International"
+
+import random
+
+# IMPORTS
+# Arcade Packages
 import arcade
-import arcade.gui as gui
+import arcade.gui
+
+# Math
 from pyglet.math import Vec2
+from tensorflow.python.ops.signal.spectral_ops import inverse_stft
 
-from constants import SCALE_FACTOR
+from components.gameEngine import GameEngine, UIEngine
+import constants as c
 
-
-#from views.menu_view import MenuView
-
+# TODO GameView zum Laufen Kriegen
 class GameView(arcade.View):
-    def __init__(self,):
+    def __init__(self):
         super().__init__()
-        self.manager = gui.UIManager()
-        
+        self.UImanager = arcade.gui.UIManager()
 
-        back_button = arcade.gui.UIFlatButton(text="Back", width=250, x=30, y=30)
-        # Initialise the button with an on_click event.
-        @back_button.event("on_click")
-        def on_click_switch_button(event):
-            from views.menu_view import MenuView
-            # Passing the main view into menu view as an argument.
-            menu_view = MenuView()
-            self.window.show_view(menu_view)
-        # Use the anchor to position the button on the screen.
-        self.manager.add(back_button)
+        self.game_engine = GameEngine()
+        self.game_engine.load_tilemap(":maps:map_1.tmx")
+        self.game_engine.load_manager()
 
-        map_name = ":level:level.tmx"
-        
-        self.tilemap = arcade.load_tilemap(map_name, scaling=SCALE_FACTOR, offset=Vec2(0,0))
-        self.scene = arcade.Scene.from_tilemap(self.tilemap)
+        self.selected_plant = "peashooter"
+        self.sun_score = 50
+        self.interval = 0
 
-        
 
-    def on_show_view(self):
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
-        self.manager.enable()
+    def _setup(self):
+        pass
 
-    def on_hide_view(self):
-        self.manager.disable()
+    def on_show(self):
+        self.UImanager.enable()
+
+    def on_hide(self):
+        self.UImanager.disable()
 
     def on_draw(self):
         self.clear()
-        self.scene.draw(pixelated=True)
-        self.manager.draw()
+        self.game_engine.scene.draw(pixelated=True)
+        self.game_engine.sprite_list_draw(pixelated=True)
 
-    def on_mouse_press(self, x, y, button, modifiers):
-        tile = arcade.get_sprites_at_point((x, y), self.scene["Feld"])
-        tile[0].alpha = 90
+    def on_update(self, delta_time: float) -> bool | None:
+        self.game_engine.update(delta_time)
 
-    def on_mouse_release(self, x, y, button, modifiers):
-        tile = arcade.get_sprites_at_point((x, y), self.scene["Feld"])
-        tile[0].alpha = 1000
+        if self.interval >= 1:
+            r = random.choice(["Normal", "Pylone", "Bucket"])
+            self.game_engine.zombie_manager.spawn_zombie(r)
+            self.interval = 0
+        else:
+            self.interval += delta_time
+
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        if symbol == arcade.key.KEY_1:
+            self.selected_plant = "sunflower"
+        if symbol == arcade.key.KEY_2:
+            self.selected_plant = "peashooter"
+        if symbol == arcade.key.KEY_3:
+            self.selected_plant = "icepeashooter"
+        if symbol == arcade.key.KEY_4:
+            self.selected_plant = "repeater"
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
+        target = self.game_engine._find_tile_at(x, y, "Plants_Grid")
+        if target:
+            if button == arcade.MOUSE_BUTTON_LEFT:
+                self.game_engine.plant_manager.spawn_plant(self.selected_plant, target)
+
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
+        try:
+            sun = arcade.get_sprites_at_point((x,y), self.game_engine.sun_sprite_list)
+            sun[-1].remove_from_sprite_lists()
+            self.sun_score += 25
+            print(self.sun_score)
+        except:
+            pass
+
+        # if button == arcade.MOUSE_BUTTON_RIGHT:
+        #     self.game_engine.zombie_manager.spawn_zombie("Normal")
+
+

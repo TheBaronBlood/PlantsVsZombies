@@ -1,4 +1,4 @@
-"""Zeigt das Start-Menü"""
+"""View, das den Ende des Spiel Handled"""
 __author__ = "Miro K."
 __copyright__ = "Electronic Arts (EA) and PopCap Games"
 __license__ = "Attribution-ShareAlike 4.0 International"
@@ -19,8 +19,8 @@ from components.projectile import Projectile, ProjectileManager
 from components.gameEngine import GameEngine, UIEngine
 from constants import *
 
-# TODO Ein Menü Erstellen
-class MenuView(arcade.View):
+
+class GameOverView(arcade.View):
     def __init__(self):
         super().__init__()
 
@@ -38,6 +38,3 @@ class MenuView(arcade.View):
 
     def on_update(self, delta_time):
         pass
-
-
-

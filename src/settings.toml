@@ -1,0 +1,51 @@
+[general]
+game_title = "Pflanzen Gegen Zombies"
+world_scale = 1
+
+[plants]
+scale = 1
+health = 100
+damage = 10
+cooldown = 1.0
+projectile_speed = 100
+extra_projectiles = 0
+
+    [plants.sun]
+    scale = 0.8
+
+    [plants.sunflower]
+    cost = 50
+    sun_produce = 25
+
+    [plants.peashooter]
+    cost = 100
+
+    [plants.icepeashooter]
+    cost = 150
+    damage = 20
+
+    [plants.repeater]
+    cost = 200
+    damage = 15
+    extra_projectiles = 1
+
+    [plants.walnut]
+    cost = 150
+    health = 300
+
+    [plants.blumerrang]
+    cost = 175
+
+
+[zombie]
+scale = 1
+speed = 100
+health = 100
+
+    [zombie.normal]
+
+    [zombie.pylone]
+    health = 150
+
+    [zombie.bucket]
+    health = 200
