@@ -1,10 +1,19 @@
 {
   "id": "level_02",
-  "sun": 50,
+  "sun": 75,
   "map": "map_1.tmx",
   "waves": [
-    { "time": 5, "zombie": "normal", "lane": 2 },
-    { "time": 12, "zombie": "pylone", "lane": 4 },
-    { "time": 20, "zombie": "normal", "lane": 1 }
+    { "time": 12, "zombie": "normal", "lane": 2 },
+    { "time": 20, "zombie": "normal", "lane": 4 },
+    { "time": 20, "zombie": "normal", "lane": 1 },
+    { "time": 30, "zombie": "pylone", "lane": 3 },
+    { "time": 30, "zombie": "normal", "lane": 5 },
+    { "time": 40, "zombie": "normal", "lane": 2 },
+    { "time": 50, "zombie": "pylone", "lane": 4 },
+    { "time": 50, "zombie": "normal", "lane": 3 },
+    { "time": 60, "zombie": "normal", "lane": 1 },
+    { "time": 70, "zombie": "pylone", "lane": 2 },
+    { "time": 70, "zombie": "pylone", "lane": 5 },
+    { "time": 80, "zombie": "normal", "lane": 3 }
   ]
 }

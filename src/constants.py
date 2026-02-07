@@ -21,6 +21,9 @@ SCREEN_HEIGHT = 720
 PLANTS_SCALE = PLANTS["scale"]
 PLANT_SCALE = PLANTS_SCALE
 SUN_SCALE = PLANTS["sun"]["scale"]
+PLANT_CARD_SLOTS = int(PLANTS.get("card_max_slots", 7))
+PLANT_CARD_ORDER = list(PLANTS.get("card_order", []))
+PLANT_CARD_SCALE = float(PLANTS.get("card_scale", 0.7))
 
 PLANTS_DEFAULTS = {k: v for k, v in PLANTS.items() if not isinstance(v, dict)}
 
@@ -38,6 +41,18 @@ PLANTS_REPEATER = _merge_defaults(PLANTS_DEFAULTS, PLANTS.get("repeater"))
 PLANTS_WALNUT = _merge_defaults(PLANTS_DEFAULTS, PLANTS.get("walnut"))
 PLANTS_BLUMERRANG = _merge_defaults(PLANTS_DEFAULTS, PLANTS.get("blumerrang"))
 PLANTS_POTATOMINE = _merge_defaults(PLANTS_DEFAULTS, PLANTS.get("potatomine"))
+
+
+def get_plant_config(name: str) -> dict:
+    return {
+        "sunflower": PLANTS_SUNFLOWER,
+        "peashooter": PLANTS_PEASHOOTER,
+        "icepeashooter": PLANTS_ICEPEASHOOTER,
+        "repeater": PLANTS_REPEATER,
+        "walnut": PLANTS_WALNUT,
+        "blumerrang": PLANTS_BLUMERRANG,
+        "potatomine": PLANTS_POTATOMINE,
+    }.get(name, PLANTS_DEFAULTS)
 
 ZOMBIE_SCALE = ZOMBIE["scale"]
 ZOMBIE_SPEED = ZOMBIE["speed"]

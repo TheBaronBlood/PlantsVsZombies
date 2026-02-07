@@ -9,18 +9,6 @@ from src.components.entities import Sun, Projectile, Sunflower
 from src.components.managers import ZombieManager, ProjectileManager
 
 
-def _get_plant_config(name: str) -> dict:
-    return {
-        "sunflower": c.PLANTS_SUNFLOWER,
-        "peashooter": c.PLANTS_PEASHOOTER,
-        "icepeashooter": c.PLANTS_ICEPEASHOOTER,
-        "repeater": c.PLANTS_REPEATER,
-        "walnut": c.PLANTS_WALNUT,
-        "blumerrang": c.PLANTS_BLUMERRANG,
-        "potatomine": c.PLANTS_POTATOMINE,
-    }.get(name, c.PLANTS_DEFAULTS)
-
-
 class CombatSystem:
     def __init__(self, context: GameContext) -> None:
         self.context = context
@@ -95,7 +83,7 @@ class CombatSystem:
             if getattr(plant, "_plant_anim_time", 0.0) < ready_time:
                 continue
 
-            plant_config = _get_plant_config(plant.name)
+            plant_config = c.get_plant_config(plant.name)
             trigger_x_tiles = float(plant_config.get("explosion_trigger_x_tiles", 0.5))
             trigger_y_tiles = float(plant_config.get("explosion_trigger_y_tiles", 0.4))
             explosion_x_tiles = float(plant_config.get("explosion_radius_x_tiles", 0.75))
@@ -133,9 +121,22 @@ class CombatSystem:
 class SunSystem:
     def __init__(self, context: GameContext) -> None:
         self.context = context
+        self._initial_delay = float(c.PLANTS_SUNFLOWER.get("sun_initial_delay", 2.0))
+        self._cooldown_min = float(c.PLANTS_SUNFLOWER.get("sun_cooldown_min", 5.0))
+        self._cooldown_max = float(c.PLANTS_SUNFLOWER.get("sun_cooldown_max", 20.0))
+        self._fall_enabled = bool(c.PLANTS.get("sun", {}).get("fall_enabled", True))
+        self._fall_initial_delay = float(c.PLANTS.get("sun", {}).get("fall_initial_delay", 8.0))
+        self._fall_interval_min = float(c.PLANTS.get("sun", {}).get("fall_interval_min", 10.0))
+        self._fall_interval_max = float(c.PLANTS.get("sun", {}).get("fall_interval_max", 18.0))
+        self._fall_target_min_y = float(c.PLANTS.get("sun", {}).get("fall_target_min_y", 260.0))
+        self._fall_target_max_y = float(c.PLANTS.get("sun", {}).get("fall_target_max_y", 520.0))
+        self._fall_speed = float(c.PLANTS.get("sun", {}).get("fall_speed", 0.8))
+        self._fall_timer = 0.0
+        self._next_fall = self._fall_initial_delay
 
     def update(self, delta_time: float) -> None:
         self._spawn_sun(delta_time)
+        self._spawn_falling_sun(delta_time)
         self._despawn_suns(delta_time)
 
     def _spawn_sun(self, delta_time: float) -> None:
@@ -144,19 +145,70 @@ class SunSystem:
                 continue
 
             plant.shoot_timer += delta_time
+            if not hasattr(plant, "sun_ready"):
+                plant.sun_ready = False
             if not hasattr(plant, "sun_cooldown"):
-                plant.sun_cooldown = random.uniform(5.0, 20.0)
+                plant.sun_cooldown = random.uniform(self._cooldown_min, self._cooldown_max)
+
+            if not plant.sun_ready:
+                if plant.shoot_timer >= self._initial_delay:
+                    self.context.suns.append(plant.create_sun())
+                    plant.shoot_timer = 0.0
+                    plant.sun_ready = True
+                    plant.sun_cooldown = random.uniform(self._cooldown_min, self._cooldown_max)
+                continue
 
             if plant.shoot_timer >= plant.sun_cooldown:
                 self.context.suns.append(plant.create_sun())
                 plant.shoot_timer = 0.0
-                plant.sun_cooldown = random.uniform(5.0, 20.0)
+                plant.sun_cooldown = random.uniform(self._cooldown_min, self._cooldown_max)
 
     def _despawn_suns(self, delta_time: float) -> None:
         for sun in self.context.suns:
             sun.shoot_timer = getattr(sun, "shoot_timer", 0.0) + delta_time
             if sun.shoot_timer >= 5:
                 sun.remove_from_sprite_lists()
+
+    def _spawn_falling_sun(self, delta_time: float) -> None:
+        if not self._fall_enabled:
+            return
+        self._fall_timer += delta_time
+        if self._fall_timer < self._next_fall:
+            return
+
+        map_width = c.SCREEN_WIDTH
+        map_height = c.SCREEN_HEIGHT
+        if self.context.tilemap:
+            map_width = self.context.tilemap.width * self.context.tilemap.tile_width
+            map_height = self.context.tilemap.height * self.context.tilemap.tile_height
+
+        start_x = random.uniform(0, map_width)
+        start = Vec2(start_x, map_height + 32)
+
+        def _to_world(value: float) -> float:
+            if 0.0 < value <= 1.0:
+                return value * map_height
+            return value
+
+        min_y = min(self._fall_target_min_y, self._fall_target_max_y)
+        max_y = max(self._fall_target_min_y, self._fall_target_max_y)
+        min_y = _to_world(min_y)
+        max_y = _to_world(max_y)
+        min_y = max(0.0, min(min_y, map_height))
+        max_y = max(0.0, min(max_y, map_height))
+        if max_y < min_y:
+            min_y, max_y = max_y, min_y
+        if max_y - min_y < 1.0:
+            min_y = map_height * 0.4
+            max_y = map_height * 0.75
+        target_y = random.uniform(min_y, max_y)
+        target = Vec2(start_x, target_y)
+        sun = Sun(start, target)
+        sun.speed = self._fall_speed
+        self.context.suns.append(sun)
+
+        self._fall_timer = 0.0
+        self._next_fall = random.uniform(self._fall_interval_min, self._fall_interval_max)
 
     def collect_at(self, x: float, y: float) -> int:
         sun_list = arcade.get_sprites_at_point((x, y), self.context.suns)
@@ -237,7 +289,7 @@ class ShootingSystem:
                 continue
 
             plant.shoot_timer += delta_time
-            plant_config = _get_plant_config(getattr(plant, "name", ""))
+            plant_config = c.get_plant_config(getattr(plant, "name", ""))
             cooldown = float(plant_config.get("cooldown", 1.0))
 
             if plant.shoot_timer >= cooldown:
