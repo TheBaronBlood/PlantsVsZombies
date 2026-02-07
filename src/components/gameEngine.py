@@ -27,7 +27,7 @@ class GameEngine:
         try:
             self.context.tilemap = arcade.load_tilemap(
                 map_file,
-                scaling=c.WORLD_SCALE,
+                scaling=1.0,
                 offset=Vec2(0, 0),
             )
             self.context.scene = arcade.Scene.from_tilemap(self.context.tilemap)

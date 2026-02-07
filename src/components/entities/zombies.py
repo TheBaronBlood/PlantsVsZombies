@@ -9,7 +9,7 @@ class Zombie(arcade.Sprite):
         super().__init__(scale=c.ZOMBIE_SCALE)
         self.name = name
         self.health = health
-        self.speed = speed
+        self.speed = speed * 0.004
         self.damage = 10
         self.attack_time = 1.0
         self.rest_time = 0.0

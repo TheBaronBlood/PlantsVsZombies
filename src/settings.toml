@@ -1,17 +1,17 @@
 [general]
 game_title = "Pflanzen Gegen Zombies"
-world_scale = 2.85
+world_scale = 1
 
 [plants]
-scale = 2.85
+scale = 1
 health = 100
 damage = 10
 cooldown = 1.0
-projectile_speed = 5
+projectile_speed = 100
 extra_projectiles = 0
 
     [plants.sun]
-    scale = 2.5
+    scale = 0.8
 
     [plants.sunflower]
     cost = 50
@@ -38,8 +38,8 @@ extra_projectiles = 0
 
 
 [zombie]
-scale = 2.85
-speed = 1
+scale = 1
+speed = 100
 health = 100
 
     [zombie.normal]

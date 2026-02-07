@@ -6,11 +6,12 @@ from src.views import GameView
 
 class MyWindow(arcade.Window):
     def __init__(self):
-        super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, c.GAME_TITLE, resizable=False)
+        super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, c.GAME_TITLE, resizable=True)
         arcade.resources.add_resource_handle("sprites", str(c.ROOT_PATH / "assets" / "sprites"))
         arcade.resources.add_resource_handle("maps", str(c.ROOT_PATH / "assets" / "maps"))
         arcade.resources.add_resource_handle("sounds", str(c.ROOT_PATH / "assets" / "sounds"))
         arcade.resources.add_resource_handle("data", str(c.ROOT_PATH / "assets" / "data"))
+        self.set_fullscreen(True)
 
 
 def game_start() -> None:

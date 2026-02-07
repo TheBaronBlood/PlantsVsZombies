@@ -33,7 +33,7 @@ class Plant(arcade.Sprite):
 class Projectile(arcade.Sprite):
     def __init__(self, x: float, y: float, speed: int, damage: int, texture: arcade.Texture) -> None:
         super().__init__(path_or_texture=texture, scale=c.PLANTS_SCALE, center_x=x, center_y=y)
-        self.speed = speed
+        self.speed = speed * 0.013
         self.damage = damage
         self.velocity = Vec2(self.speed, 0)
 
@@ -92,7 +92,7 @@ class Sunflower(Plant):
     def create_sun(self) -> Sun:
         start = Vec2(self.center_x, self.center_y)
         angle = random.uniform(0, 2 * math.pi)
-        radius = random.uniform(60, 120)
+        radius = random.uniform(20, 60)
         target = Vec2(start.x + math.cos(angle) * radius, start.y + math.sin(angle) * radius)
         return Sun(start, target)
 
