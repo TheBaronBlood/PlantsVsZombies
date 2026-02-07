@@ -9,15 +9,29 @@ damage = 20
 cooldown = 1.75
 projectile_speed = 75
 extra_projectiles = 0
+card_max_slots = 7
+card_order = ["sunflower", "peashooter", "icepeashooter", "repeater", "blumerrang", "walnut", "potatomine"]
+plant_place_cooldown = 1.5
+card_scale = 1.5
 
     [plants.sun]
     scale = 0.8
+    fall_enabled = true
+    fall_initial_delay = 2.0
+    fall_interval_min = 10.0
+    fall_interval_max = 25.0
+    fall_target_min_y = 0.25
+    fall_target_max_y = 0.55
+    fall_speed = 0.3
 
     [plants.sunflower]
     cost = 50
     sun_produce = 25
     plant_frames = 1
     bullet_frames = 1
+    sun_initial_delay = 2.0
+    sun_cooldown_min = 2.0
+    sun_cooldown_max = 10.0
 
     [plants.peashooter]
     cost = 100
@@ -51,6 +65,7 @@ extra_projectiles = 0
     projectile_pierce = true
 
     [plants.potatomine]
+    cost = 25
     plant_frames = 3
     bullet_frames = 0
     plant_stage_times = [5, 8]

@@ -2,17 +2,16 @@ import json
 from pathlib import Path
 
 import arcade
-import arcade.gui
 
 import src.constants as c
 from src.components.gameEngine import GameEngine
+from src.ui import PlantCardBar
 from src.views.endView import EndView
 
 
 class GameView(arcade.View):
     def __init__(self):
         super().__init__()
-        self.ui_manager = arcade.gui.UIManager()
         self.virtual_width = c.SCREEN_WIDTH
         self.virtual_height = c.SCREEN_HEIGHT
         self.camera: arcade.Camera2D | None = None
@@ -23,26 +22,37 @@ class GameView(arcade.View):
 
         self.level_index = 0
         self.engine = GameEngine()
-        self.selected_plant = "peashooter"
+        self.available_plants = c.PLANT_CARD_ORDER or ["sunflower", "peashooter", "icepeashooter"]
+        self.loadout_plants = list(self.available_plants)[: c.PLANT_CARD_SLOTS]
+        self.card_bar = PlantCardBar(
+            self.loadout_plants,
+            max_slots=c.PLANT_CARD_SLOTS,
+            card_scale=c.PLANT_CARD_SCALE,
+        )
         self.sun_score = 0
         self._load_level_index(self.level_index)
+        self._build_card_bar()
 
     def on_show(self):
-        self.ui_manager.enable()
         if self.window:
             self._apply_viewport(self.window.width, self.window.height)
+        self._build_card_bar()
 
     def on_hide(self):
-        self.ui_manager.disable()
+        return
 
     def on_draw(self):
         self.clear()
         if self.camera:
             self.camera.use()
         self.engine.draw()
+        if self.window:
+            self.window.default_camera.use()
+        self.card_bar.draw()
 
     def on_update(self, delta_time: float):
         self.engine.update(delta_time)
+        self.card_bar.update(delta_time, self.sun_score)
         if (
             self.engine.spawn_system.has_waves()
             and self.engine.spawn_system.is_finished()
@@ -58,23 +68,22 @@ class GameView(arcade.View):
             window.set_fullscreen(not window.fullscreen)
             if not window.fullscreen:
                 window.set_size(c.SCREEN_WIDTH, c.SCREEN_HEIGHT)
+            self._build_card_bar()
             return
-        if symbol == arcade.key.KEY_1:
-            self.selected_plant = "sunflower"
-        if symbol == arcade.key.KEY_2:
-            self.selected_plant = "peashooter"
-        if symbol == arcade.key.KEY_3:
-            self.selected_plant = "blumerrang"
-        if symbol == arcade.key.KEY_4:
-            self.selected_plant = "walnut"
+        return
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         if button != arcade.MOUSE_BUTTON_LEFT:
             return
+        if self.card_bar.handle_click(x, y, self.sun_score):
+            return
         world_x, world_y = self._screen_to_world(x, y)
         tile = self.engine.find_tile_at(world_x, world_y, "Plants_Grid")
-        if tile:
-            self.engine.plant_manager.spawn(self.selected_plant, tile)
+        selected_plant = self.card_bar.get_selected()
+        if tile and self.card_bar.can_place(selected_plant, self.sun_score):
+            self.engine.plant_manager.spawn(selected_plant, tile)
+            self._apply_plant_cost(selected_plant)
+            self.card_bar.mark_used(selected_plant)
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         world_x, world_y = self._screen_to_world(x, y)
@@ -86,6 +95,7 @@ class GameView(arcade.View):
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self._apply_viewport(width, height)
+        self._build_card_bar()
 
     def _advance_level(self) -> None:
         next_index = self.level_index + 1
@@ -121,6 +131,20 @@ class GameView(arcade.View):
         self.sun_score = int(level_data.get("sun", 0))
         if self.window:
             self._apply_viewport(self.window.width, self.window.height)
+
+    def _build_card_bar(self) -> None:
+        width = self.window.width if self.window else c.SCREEN_WIDTH
+        height = self.window.height if self.window else c.SCREEN_HEIGHT
+        self.card_bar.build(width, height)
+
+    def _apply_plant_cost(self, plant_name: str) -> None:
+        cost = int(c.get_plant_config(plant_name).get("cost", 0))
+        self.sun_score = max(0, self.sun_score - cost)
+
+    def set_loadout(self, plants: list[str]) -> None:
+        self.loadout_plants = list(plants)[: c.PLANT_CARD_SLOTS]
+        self.card_bar.set_loadout(self.loadout_plants)
+        self._build_card_bar()
 
     def _apply_viewport(self, width: int, height: int) -> None:
         if width <= 0 or height <= 0:
