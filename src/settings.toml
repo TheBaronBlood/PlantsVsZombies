@@ -48,6 +48,7 @@ card_scale = 1.5
     cost = 150
     damage = 20
     extra_projectiles = 1
+    cooldown = 1.0
     plant_frames = 1
     bullet_frames = 1
 
