@@ -13,3 +13,5 @@ build/
 *.spec
 assets/.DS_Store
 *.log
+/AGENTS.md
+/summary.md
