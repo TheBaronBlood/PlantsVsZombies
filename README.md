@@ -24,13 +24,14 @@ menu → game → death flow with a few levels that can be extended later.
 ```shell
 python -m venv .venv
 source .venv/bin/activate   # Linux/Mac
-.venv\Scripts\activate      # Windows
+Set-ExecutionPolicy -Scope Process -Execution Policy Bypass # Windows   
+.venv\Scripts\activate                                      # Windows   
 python -m pip install -r requirements.txt
 ```
 
 ### Executing program
 ```shell
-python src/main.py
+python -m src.main
 ```
 
 ### Tests (optional)
